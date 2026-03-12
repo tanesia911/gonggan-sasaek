@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공간사색 — 감성 스펙트럼 카드 생성기</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f0e8; --bg-warm: #ede7d9; --ink: #1a1714;
+    --ink-mid: #3d3730; --ink-soft: #7a6e62; --ink-faint: #b0a496;
+    --amber: #c8862a; --rule: rgba(26,23,20,0.12);
+  }
+  body { background: var(--bg); color: var(--ink); font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; font-size: 13px; }
+  header { background: var(--bg-warm); border-bottom: 1px solid var(--rule); padding: 1rem 2rem; }
+  header h1 { font-size: .95rem; font-weight: 500; }
+  header p { font-size: .72rem; color: var(--ink-soft); margin-top: .2rem; }
+  .layout { display: grid; grid-template-columns: 340px 1fr; gap: 2rem; max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; }
+  @media(max-width:720px){.layout{grid-template-columns:1fr;}}
+
+  /* 컨트롤 패널 */
+  .panel { background: white; border: 1px solid var(--rule); border-radius: 4px; padding: 1.4rem; }
+  .panel h2 { font-size: .65rem; letter-spacing: .15em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem; }
+  .slider-group { margin-bottom: 1rem; }
+  .slider-label { display: flex; justify-content: space-between; margin-bottom: .3rem; }
+  .slider-label span { font-size: .72rem; color: var(--ink-soft); }
+  .slider-label strong { font-size: .72rem; color: var(--ink); font-weight: 600; }
+  input[type=range] {
+    width: 100%; -webkit-appearance: none; height: 3px;
+    background: var(--rule); border-radius: 2px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px;
+    border-radius: 50%; background: var(--amber); cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+  .range-labels { display: flex; justify-content: space-between; font-size: .62rem; color: var(--ink-faint); margin-top: .15rem; }
+
+  input[type=text], textarea {
+    width: 100%; padding: .45rem .65rem;
+    border: 1px solid var(--rule); border-radius: 3px;
+    background: var(--bg); font-family: inherit; font-size: .82rem;
+    color: var(--ink); outline: none;
+  }
+  input[type=text]:focus, textarea:focus { border-color: var(--amber); }
+  label { display: block; font-size: .68rem; color: var(--ink-soft); margin: .7rem 0 .2rem; }
+
+  .btn { padding: .5rem 1.1rem; border: none; border-radius: 3px; cursor: pointer; font-size: .78rem; font-weight: 500; font-family: inherit; }
+  .btn-primary { background: var(--amber); color: white; margin-top: .8rem; width: 100%; }
+  .btn-dl { background: var(--ink); color: white; margin-top: .5rem; width: 100%; }
+
+  /* 카드 캔버스 영역 */
+  .card-preview { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  canvas { border: 1px solid var(--rule); border-radius: 2px; box-shadow: 0 4px 20px rgba(0,0,0,.08); max-width: 100%; }
+  .card-meta { font-size: .7rem; color: var(--ink-soft); text-align: center; }
+
+  /* 탭 */
+  .tabs { display: flex; gap: .3rem; margin-bottom: 1rem; }
+  .tab { padding: .3rem .8rem; border: 1px solid var(--rule); border-radius: 3px; cursor: pointer; font-size: .72rem; background: var(--bg); transition: all .15s; }
+  .tab.active { background: var(--amber); color: white; border-color: var(--amber); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+</style>
+</head>
+<body>
+<header>
+  <h1>공간사색 — 감성 스펙트럼 카드 생성기</h1>
+  <p>매일 오늘의 음악·음료 특성을 시각화한 인쇄용 카드 (148×100mm / A6 가로)</p>
+</header>
+
+<div class="layout">
+  <div class="panel">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('music')">🎵 음악</div>
+      <div class="tab" onclick="switchTab('bev')">☕ 음료</div>
+      <div class="tab" onclick="switchTab('info')">📋 기본</div>
+    </div>
+
+    <!-- 음악 탭 -->
+    <div class="tab-panel active" id="tab-music">
+      <h2>음악 스펙트럼</h2>
+      <div class="slider-group">
+        <div class="slider-label"><span>밝기 (Dark ↔ Bright)</span><strong id="lbl-brightness">5</strong></div>
+        <input type="range" id="s-brightness" min="1" max="10" value="5" oninput="syncLabel(this,'lbl-brightness');drawCard()">
+        <div class="range-labels"><span>어둡고 무거움</span><span>밝고 투명함</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>무게감 (Light ↔ Dense)</span><strong id="lbl-weight">5</strong></div>
+        <input type="range" id="s-weight" min="1" max="10" value="5" oninput="syncLabel(this,'lbl-weight');drawCard()">
+        <div class="range-labels"><span>가볍고 공기같은</span><span>두껍고 밀도높은</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>템포 (Slow ↔ Fast)</span><strong id="lbl-tempo">4</strong></div>
+        <input type="range" id="s-tempo" min="1" max="10" value="4" oninput="syncLabel(this,'lbl-tempo');drawCard()">
+        <div class="range-labels"><span>느리고 명상적</span><span>빠르고 역동적</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>여운 (Short ↔ Long)</span><strong id="lbl-tail">7</strong></div>
+        <input type="range" id="s-tail" min="1" max="10" value="7" oninput="syncLabel(this,'lbl-tail');drawCard()">
+        <div class="range-labels"><span>짧고 명확한</span><span>길고 잔잔한</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>공간감 (Intimate ↔ Spacious)</span><strong id="lbl-space">6</strong></div>
+        <input type="range" id="s-space" min="1" max="10" value="6" oninput="syncLabel(this,'lbl-space');drawCard()">
+        <div class="range-labels"><span>밀착·내밀한</span><span>넓고 개방적</span></div>
+      </div>
+    </div>
+
+    <!-- 음료 탭 -->
+    <div class="tab-panel" id="tab-bev">
+      <h2>음료 스펙트럼</h2>
+      <div class="slider-group">
+        <div class="slider-label"><span>산미 (Low ↔ High)</span><strong id="lbl-acidity">4</strong></div>
+        <input type="range" id="s-acidity" min="1" max="10" value="4" oninput="syncLabel(this,'lbl-acidity');drawCard()">
+        <div class="range-labels"><span>산미 낮음</span><span>산미 높음</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>바디 (Light ↔ Full)</span><strong id="lbl-body">7</strong></div>
+        <input type="range" id="s-body" min="1" max="10" value="7" oninput="syncLabel(this,'lbl-body');drawCard()">
+        <div class="range-labels"><span>가벼운</span><span>풀바디</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>단맛 (Dry ↔ Sweet)</span><strong id="lbl-sweet">5</strong></div>
+        <input type="range" id="s-sweet" min="1" max="10" value="5" oninput="syncLabel(this,'lbl-sweet');drawCard()">
+        <div class="range-labels"><span>드라이</span><span>달콤한</span></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-label"><span>여운 (Clean ↔ Lingering)</span><strong id="lbl-finish">8</strong></div>
+        <input type="range" id="s-finish" min="1" max="10" value="8" oninput="syncLabel(this,'lbl-finish');drawCard()">
+        <div class="range-labels"><span>깔끔한</span><span>긴 여운</span></div>
+      </div>
+    </div>
+
+    <!-- 기본 정보 탭 -->
+    <div class="tab-panel" id="tab-info">
+      <h2>카드 정보</h2>
+      <label>날짜</label>
+      <input type="text" id="i-date" value="" oninput="drawCard()">
+      <label>날씨</label>
+      <input type="text" id="i-weather" value="맑음" oninput="drawCard()">
+      <label>오늘의 테마</label>
+      <input type="text" id="i-theme" value="이른 봄, 빛이 길어지는 오후" oninput="drawCard()">
+      <label>음악 키워드 (쉼표 구분)</label>
+      <input type="text" id="i-music-kw" value="Bill Evans, Miles Davis, Coltrane" oninput="drawCard()">
+      <label>☕ 커피</label>
+      <input type="text" id="i-coffee" value="콜롬비아 후일라" oninput="drawCard()">
+      <label>커피 노트</label>
+      <input type="text" id="i-coffee-note" value="다크초콜릿 · 캐러멜" oninput="drawCard()">
+      <label>🍵 차</label>
+      <input type="text" id="i-tea" value="백호은침" oninput="drawCard()">
+      <label>차 노트</label>
+      <input type="text" id="i-tea-note" value="여백 · 여운" oninput="drawCard()">
+    </div>
+
+    <button class="btn btn-primary" onclick="drawCard()">카드 미리보기 갱신</button>
+    <button class="btn btn-dl" onclick="downloadCard()">PNG 다운로드 (인쇄용)</button>
+  </div>
+
+  <div class="card-preview">
+    <canvas id="card-canvas" width="559" height="378"></canvas>
+    <p class="card-meta">148 × 100mm · 96dpi 미리보기 / 다운로드 시 300dpi 고해상도</p>
+  </div>
+</div>
+
+<script>
+// 날짜 자동
+(function(){
+  const now = new Date();
+  const days = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+  const y=now.getFullYear(),m=now.getMonth()+1,d=now.getDate(),day=days[now.getDay()];
+  document.getElementById('i-date').value = `${y}. ${String(m).padStart(2,'0')}. ${String(d).padStart(2,'0')}. ${day}`;
+})();
+
+function syncLabel(input, labelId) {
+  document.getElementById(labelId).textContent = input.value;
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const names=['music','bev','info'];
+    t.classList.toggle('active', names[i]===name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+function getValues() {
+  return {
+    brightness: +document.getElementById('s-brightness').value,
+    weight: +document.getElementById('s-weight').value,
+    tempo: +document.getElementById('s-tempo').value,
+    tail: +document.getElementById('s-tail').value,
+    space: +document.getElementById('s-space').value,
+    acidity: +document.getElementById('s-acidity').value,
+    body: +document.getElementById('s-body').value,
+    sweet: +document.getElementById('s-sweet').value,
+    finish: +document.getElementById('s-finish').value,
+    date: document.getElementById('i-date').value,
+    weather: document.getElementById('i-weather').value,
+    theme: document.getElementById('i-theme').value,
+    musicKw: document.getElementById('i-music-kw').value,
+    coffee: document.getElementById('i-coffee').value,
+    coffeeNote: document.getElementById('i-coffee-note').value,
+    tea: document.getElementById('i-tea').value,
+    teaNote: document.getElementById('i-tea-note').value,
+  };
+}
+
+function drawCard(scale=1) {
+  const v = getValues();
+  const W = 559 * scale, H = 378 * scale;
+  const canvas = scale === 1 ? document.getElementById('card-canvas') : document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const s = scale;
+
+  // 배경
+  ctx.fillStyle = '#f5f0e8';
+  ctx.fillRect(0, 0, W, H);
+
+  // 그레인 (간단 노이즈 시뮬)
+  ctx.fillStyle = 'rgba(0,0,0,0.018)';
+  for (let i = 0; i < 4000 * scale; i++) {
+    ctx.fillRect(Math.random()*W, Math.random()*H, 1*s, 1*s);
+  }
+
+  // 상단 헤더 구분선
+  ctx.strokeStyle = 'rgba(26,23,20,0.12)';
+  ctx.lineWidth = .5 * s;
+  ctx.beginPath(); ctx.moveTo(20*s, 52*s); ctx.lineTo(W-20*s, 52*s); ctx.stroke();
+
+  // 로고 + 날짜
+  ctx.fillStyle = '#1a1714';
+  ctx.font = `${9*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.letterSpacing = `${1.5*s}px`;
+  ctx.fillText('공간사색 · 空間思索', 20*s, 22*s);
+
+  ctx.fillStyle = '#7a6e62';
+  ctx.font = `${7.5*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.letterSpacing = `${0.5*s}px`;
+  ctx.fillText(v.date + (v.weather ? ' · ' + v.weather : ''), 20*s, 38*s);
+
+  // 테마
+  ctx.fillStyle = '#c8862a';
+  ctx.font = `italic ${8*s}px Georgia, serif`;
+  ctx.fillText(v.theme, 20*s, 68*s);
+
+  // ── 음악 스펙트럼 ──
+  const labels_m = ['밝기', '무게감', '템포', '여운', '공간감'];
+  const vals_m = [v.brightness, v.weight, v.tempo, v.tail, v.space];
+  drawSpectrum(ctx, s, 20*s, 82*s, (W/2-30)*s/s, 100*s, '🎵 음악', labels_m, vals_m, '#c8862a');
+
+  // ── 음료 스펙트럼 ──
+  const labels_b = ['산미', '바디', '단맛', '여운'];
+  const vals_b = [v.acidity, v.body, v.sweet, v.finish];
+  drawSpectrum(ctx, s, W/2+10*s, 82*s, (W/2-30)*s/s, 86*s, '☕ 음료', labels_b, vals_b, '#7a6e62');
+
+  // ── 하단 구분선 ──
+  ctx.strokeStyle = 'rgba(26,23,20,0.10)';
+  ctx.lineWidth = .5*s;
+  ctx.beginPath(); ctx.moveTo(20*s, H-66*s); ctx.lineTo(W-20*s, H-66*s); ctx.stroke();
+
+  // ── 하단 음료 정보 ──
+  const bw = (W-40*s)/2;
+  // 커피
+  ctx.fillStyle = '#7a6e62';
+  ctx.font = `${7*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.fillText('☕ ' + (v.coffee||'커피'), 20*s, H-50*s);
+  ctx.fillStyle = '#1a1714';
+  ctx.font = `${8.5*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.fillText(v.coffeeNote, 20*s, H-36*s);
+  // 차
+  ctx.fillStyle = '#7a6e62';
+  ctx.font = `${7*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.fillText('🍵 ' + (v.tea||'차'), 20*s+bw+6*s, H-50*s);
+  ctx.fillStyle = '#1a1714';
+  ctx.font = `${8.5*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.fillText(v.teaNote, 20*s+bw+6*s, H-36*s);
+
+  // 음악 키워드
+  ctx.fillStyle = '#b0a496';
+  ctx.font = `${6.5*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.fillText(v.musicKw, 20*s, H-20*s);
+
+  // 테두리
+  ctx.strokeStyle = 'rgba(26,23,20,0.08)';
+  ctx.lineWidth = 1*s;
+  ctx.strokeRect(1*s, 1*s, W-2*s, H-2*s);
+
+  return canvas;
+}
+
+function drawSpectrum(ctx, s, x, y, barW, totalH, title, labels, values, color) {
+  const n = labels.length;
+  const rowH = (totalH - 16*s) / n;
+  const barMaxW = barW - 52*s;
+
+  ctx.fillStyle = '#7a6e62';
+  ctx.font = `${6.5*s}px 'Apple SD Gothic Neo', sans-serif`;
+  ctx.fillText(title, x, y);
+
+  for (let i = 0; i < n; i++) {
+    const ry = y + 14*s + i * rowH;
+    const val = values[i];
+
+    // 레이블
+    ctx.fillStyle = '#7a6e62';
+    ctx.font = `${6.5*s}px 'Apple SD Gothic Neo', sans-serif`;
+    ctx.fillText(labels[i], x, ry + 6*s);
+
+    // 배경 바
+    ctx.fillStyle = 'rgba(26,23,20,0.06)';
+    ctx.beginPath();
+    ctx.roundRect(x+36*s, ry, barMaxW, 7*s, 2*s);
+    ctx.fill();
+
+    // 값 바
+    const fillW = (val / 10) * barMaxW;
+    const alpha = 0.55 + (val/10)*0.35;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.roundRect(x+36*s, ry, fillW, 7*s, 2*s);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // 숫자
+    ctx.fillStyle = '#1a1714';
+    ctx.font = `${6*s}px 'Apple SD Gothic Neo', sans-serif`;
+    ctx.fillText(val, x+36*s+barMaxW+3*s, ry+6*s);
+  }
+}
+
+function downloadCard() {
+  const canvas = drawCard(3); // 300dpi 기준 3배 렌더
+  const a = document.createElement('a');
+  a.download = '공간사색_스펙트럼카드.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// 초기 렌더
+window.addEventListener('load', () => drawCard());
+</script>
+</body>
+</html>
