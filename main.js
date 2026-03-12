@@ -63,52 +63,69 @@ setTimeout(initReveal, 80);
 const emailEl = document.getElementById('email-reveal');
 if (emailEl) emailEl.textContent = 'gonggan-sasaek' + '@' + 'naver.com';
 
-// ── today.json 로드 ──
+// ── today.json 로드 (sessionStorage 캐싱) ──
 async function loadToday() {
+  const CACHE_KEY = 'gonggan_today';
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  let d = null;
+
+  // 오늘 날짜 캐시가 있으면 즉시 사용 (fetch 생략)
   try {
-    const res = await fetch('./today.json?v=' + Date.now());
-    if (!res.ok) throw new Error('fetch failed');
-    const d = await res.json();
-
-    const dateEl = document.getElementById('today-date-el');
-    const themeEl = document.getElementById('today-theme-el');
-    const musicEl = document.getElementById('today-music-el');
-    const coffeeNameEl = document.getElementById('brew-coffee-name');
-    const coffeeNoteEl = document.getElementById('brew-coffee-note');
-    const teaNameEl = document.getElementById('brew-tea-name');
-    const teaNoteEl = document.getElementById('brew-tea-note');
-    const pairingEl = document.getElementById('today-pairing-el');
-
-    if (dateEl) dateEl.textContent = d.date + (d.weather ? ' · ' + d.weather : '');
-    if (themeEl) themeEl.textContent = d.theme || '';
-
-    if (musicEl && d.playlist && d.playlist.length) {
-      const show = d.playlist.slice(0, 5);
-      musicEl.innerHTML = show.map(t =>
-        '<div class="today-music-item">' +
-        '<span class="tm-time">' + t.time + '</span>' +
-        '<span class="tm-artist">' + t.artist + '</span>' +
-        '<span class="tm-album">&nbsp;' + t.album + '</span>' +
-        '</div>'
-      ).join('') + (d.playlist.length > 5
-        ? '<div style="font-size:.66rem;color:var(--ink-faint);padding:.4rem 0 0;">외 ' + (d.playlist.length - 5) + '곡</div>'
-        : '');
+    const cached = sessionStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed._cachedDate === today) d = parsed;
     }
+  } catch(e) {}
 
-    if (d.coffee) {
-      if (coffeeNameEl) coffeeNameEl.textContent = d.coffee.origin || '—';
-      if (coffeeNoteEl) coffeeNoteEl.textContent = d.coffee.note || '';
+  if (!d) {
+    try {
+      const res = await fetch('./today.json?d=' + today);
+      if (!res.ok) throw new Error('fetch failed');
+      d = await res.json();
+      d._cachedDate = today;
+      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(d)); } catch(e) {}
+    } catch (err) {
+      const dateEl = document.getElementById('today-date-el');
+      if (dateEl) dateEl.textContent = '오늘의 큐레이션을 준비 중입니다.';
+      return;
     }
-    if (d.tea) {
-      if (teaNameEl) teaNameEl.textContent = d.tea.name || '—';
-      if (teaNoteEl) teaNoteEl.textContent = d.tea.note || '';
-    }
-    if (pairingEl && d.pairing_reason) pairingEl.textContent = d.pairing_reason;
-
-  } catch (err) {
-    const dateEl = document.getElementById('today-date-el');
-    if (dateEl) dateEl.textContent = '오늘의 큐레이션을 준비 중입니다.';
   }
+
+  const dateEl = document.getElementById('today-date-el');
+  const themeEl = document.getElementById('today-theme-el');
+  const musicEl = document.getElementById('today-music-el');
+  const coffeeNameEl = document.getElementById('brew-coffee-name');
+  const coffeeNoteEl = document.getElementById('brew-coffee-note');
+  const teaNameEl = document.getElementById('brew-tea-name');
+  const teaNoteEl = document.getElementById('brew-tea-note');
+  const pairingEl = document.getElementById('today-pairing-el');
+
+  if (dateEl) dateEl.textContent = d.date + (d.weather ? ' · ' + d.weather : '');
+  if (themeEl) themeEl.textContent = d.theme || '';
+
+  if (musicEl && d.playlist && d.playlist.length) {
+    const show = d.playlist.slice(0, 5);
+    musicEl.innerHTML = show.map(t =>
+      '<div class="today-music-item">' +
+      '<span class="tm-time">' + t.time + '</span>' +
+      '<span class="tm-artist">' + t.artist + '</span>' +
+      '<span class="tm-album">&nbsp;' + t.album + '</span>' +
+      '</div>'
+    ).join('') + (d.playlist.length > 5
+      ? '<div style="font-size:.66rem;color:var(--ink-faint);padding:.4rem 0 0;">외 ' + (d.playlist.length - 5) + '곡</div>'
+      : '');
+  }
+
+  if (d.coffee) {
+    if (coffeeNameEl) coffeeNameEl.textContent = d.coffee.origin || '—';
+    if (coffeeNoteEl) coffeeNoteEl.textContent = d.coffee.note || '';
+  }
+  if (d.tea) {
+    if (teaNameEl) teaNameEl.textContent = d.tea.name || '—';
+    if (teaNoteEl) teaNoteEl.textContent = d.tea.note || '';
+  }
+  if (pairingEl && d.pairing_reason) pairingEl.textContent = d.pairing_reason;
 }
 
 loadToday();
