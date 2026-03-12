@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공간사색 — 空間思索</title>
+  <meta name="description" content="파주 헤이리마을 빈티지 오디오 청음 공간">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&family=Space+Mono&display=swap" media="print" onload="this.media='all'">
+  <style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a08;--bg2:#111110;--bgcard:#141412;
+  --line:rgba(255,255,255,.07);--lineb:rgba(255,255,255,.13);
+  --ink:#e8e2d6;--inkm:#a09890;--inks:#6a6460;
+  --amber:#c8862a;--amberd:rgba(200,134,42,.12);
+  --mono:'Space Mono','Courier New',monospace;
+  --serif:'Noto Serif KR','Georgia',serif;
+  --sw:210px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--serif);min-height:100vh;display:flex}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.022}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:100}
+.sb-logo{padding:1.8rem 1.4rem 1.4rem;border-bottom:1px solid var(--line)}
+.sb-kr{font-family:var(--mono);font-size:.62rem;letter-spacing:.22em;color:var(--amber);margin-bottom:.35rem}
+.sb-hanja{font-family:var(--serif);font-size:1rem;font-weight:300;color:var(--ink);letter-spacing:.08em}
+.sb-sub{font-family:var(--mono);font-size:.52rem;color:var(--inks);letter-spacing:.08em;margin-top:.45rem;line-height:1.5}
+.sb-nav{flex:1;padding:1rem 0}
+.ni{display:flex;align-items:center;gap:.7rem;padding:.65rem 1.4rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--inks);text-decoration:none;border-left:2px solid transparent;transition:all .15s}
+.ni:hover,.ni.active{color:var(--ink);border-left-color:var(--amber);background:var(--amberd)}
+.ni.active .nn{color:var(--amber)}
+.nn{font-size:.5rem;color:var(--inks);min-width:1.4rem}
+.sb-foot{padding:1rem 1.4rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:.54rem;color:var(--inks);letter-spacing:.08em;display:flex;align-items:center;gap:.5rem}
+.dot{width:6px;height:6px;border-radius:50%;background:#5cba7d;animation:blink 2.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:50;height:42px;background:rgba(10,10,8,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 2rem}
+.tb-left{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;color:var(--inks)}
+.tb-left em{color:var(--amber);font-style:normal}
+.tb-right{display:flex;align-items:center;gap:1rem}
+.tb-addr{font-family:var(--mono);font-size:.54rem;color:var(--inks);letter-spacing:.06em}
+#tt{background:none;border:1px solid var(--line);padding:.2rem .5rem;cursor:pointer;font-family:var(--mono);font-size:.56rem;color:var(--inks);letter-spacing:.06em;transition:all .15s;border-radius:2px}
+#tt:hover{border-color:var(--amber);color:var(--amber)}
+
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;position:relative;z-index:1}
+section{border-bottom:1px solid var(--line)}
+
+/* SEC HEAD */
+.sh{display:flex;align-items:baseline;gap:1.2rem;padding:1.4rem 2rem;border-bottom:1px solid var(--line);background:var(--bg2)}
+.sn{font-family:var(--mono);font-size:.52rem;color:var(--inks);letter-spacing:.1em}
+.sk{font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;color:var(--amber)}
+.se{font-family:var(--serif);font-size:.76rem;color:var(--inks);font-style:italic}
+.sd{margin-left:auto;text-align:right;font-family:var(--mono);font-size:.54rem;color:var(--inks);letter-spacing:.05em;line-height:1.7}
+
+/* HERO */
+.hero-body{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
+.hl{padding:3.5rem 2rem 2.5rem;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between}
+.eyebrow{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;color:var(--inks);margin-bottom:2.5rem}
+.eyebrow span{display:inline-block;padding:.18rem .55rem;border:1px solid var(--line);margin-right:.3rem;margin-bottom:.3rem}
+.hero-h1{font-family:var(--serif);font-size:clamp(2.6rem,4.5vw,4.4rem);font-weight:300;line-height:1.1;letter-spacing:-.01em;color:var(--ink)}
+.hero-h1 em{font-style:italic;color:var(--amber)}
+.hero-sub{margin-top:2rem;padding-top:1.4rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:.62rem;letter-spacing:.07em;color:var(--inks);line-height:1.7}
+.hr{position:relative;overflow:hidden;min-height:460px}
+.hp{position:absolute;inset:0;opacity:.2}
+.hp img{width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:saturate(.3) brightness(.7)}
+.hcw{position:relative;z-index:2;padding:2rem;height:100%;display:flex;align-items:flex-start;justify-content:flex-end}
+
+/* TODAY CARD */
+.tc{width:100%;max-width:320px;background:var(--bgcard);border:1px solid var(--lineb);padding:1.2rem}
+.tch{display:flex;align-items:center;justify-content:space-between;padding-bottom:.7rem;margin-bottom:.8rem;border-bottom:1px solid var(--line)}
+.tcl{font-family:var(--mono);font-size:.52rem;letter-spacing:.16em;color:var(--amber)}
+.tcd{font-family:var(--mono);font-size:.52rem;color:var(--inks);letter-spacing:.05em}
+.tct{font-family:var(--serif);font-size:.78rem;color:var(--inkm);font-style:italic;margin-bottom:.7rem}
+.tcm{list-style:none;margin-bottom:.9rem}
+.tcm li{display:flex;gap:.5rem;font-family:var(--mono);font-size:.54rem;color:var(--inks);letter-spacing:.03em;padding:.22rem 0;border-bottom:1px solid var(--line)}
+.tcm li .tt{color:var(--amber);min-width:2.4rem}
+.tcdiv{height:1px;background:var(--line);margin:.7rem 0}
+.tcb{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.7rem}
+.tcbc label{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;color:var(--inks);display:block;margin-bottom:.18rem}
+.tcbc p{font-family:var(--serif);font-size:.72rem;color:var(--ink)}
+.tcbc .bn{font-size:.6rem;color:var(--inks)}
+.tcp{font-family:var(--serif);font-size:.64rem;color:var(--inks);font-style:italic;line-height:1.6;padding-top:.6rem;border-top:1px solid var(--line)}
+.tcf{display:flex;justify-content:space-between;margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--line);font-family:var(--mono);font-size:.5rem;color:var(--inks);letter-spacing:.05em}
+
+/* HERO META */
+.hm{display:grid;grid-template-columns:repeat(4,1fr)}
+.hmi{padding:.9rem 1.5rem;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:.2rem}
+.hmi:last-child{border-right:none}
+.hmk{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;color:var(--inks);text-transform:uppercase}
+.hmv{font-family:var(--serif);font-size:.76rem;color:var(--inkm)}
+
+/* PROGRAMME */
+.prog-h{display:grid;grid-template-columns:1fr 1fr}
+.ph{padding:4rem 2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px}
+.ph:first-child{border-right:1px solid var(--line)}
+.ppn{font-family:var(--mono);font-size:.54rem;letter-spacing:.18em;color:var(--inks);margin-bottom:.8rem}
+.ppl{font-family:var(--serif);font-size:3.8rem;font-weight:300;color:var(--ink);line-height:1}
+.ps{display:flex;align-items:center;gap:1.2rem;padding:1.2rem 2rem;border-top:1px solid var(--line);background:var(--bg2)}
+.psl{flex:1;height:1px;background:var(--lineb)}
+.psc{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;color:var(--amber)}
+
+/* CONCEPT */
+.cg{display:grid;grid-template-columns:1fr 1fr}
+.cl{padding:3rem 2rem;border-right:1px solid var(--line)}
+.ck{font-family:var(--serif);font-size:5rem;font-weight:300;color:var(--amber);opacity:.15;line-height:1;margin-bottom:2rem;letter-spacing:.05em}
+.cb p{font-family:var(--serif);font-size:.85rem;line-height:2;color:var(--inkm);margin-bottom:1.2rem}
+.cb p:last-child{margin-bottom:0}
+.cr{display:flex;flex-direction:column}
+.ip{flex:1;padding:2rem;border-bottom:1px solid var(--line)}
+.ip:last-child{border-bottom:none}
+.ipt{font-family:var(--mono);font-size:.56rem;letter-spacing:.18em;color:var(--amber);padding-bottom:.7rem;margin-bottom:1rem;border-bottom:1px solid var(--line)}
+.ir{display:flex;gap:.8rem;padding:.38rem 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ir:last-child{border-bottom:none}
+.ik{font-family:var(--mono);font-size:.54rem;letter-spacing:.08em;color:var(--inks);min-width:7rem;flex-shrink:0}
+.iv{font-family:var(--serif);font-size:.76rem;color:var(--inkm);line-height:1.5}
+.iv a{color:var(--amber);text-decoration:none;border-bottom:1px solid rgba(200,134,42,.25);transition:border-color .15s}
+.iv a:hover{border-bottom-color:var(--amber)}
+.iv a.m{color:var(--inkm);border-bottom-color:var(--line)}
+.iv a.m:hover{color:var(--amber);border-bottom-color:var(--amber)}
+
+/* RECORDS */
+.rg{display:grid;grid-template-columns:repeat(3,1fr)}
+.rc{padding:1.8rem;border-right:1px solid var(--line);transition:background .15s}
+.rc:last-child{border-right:none}
+.rc:hover{background:var(--bg2)}
+.ri{font-family:var(--mono);font-size:.5rem;letter-spacing:.14em;color:var(--inks);margin-bottom:.9rem}
+.rda{font-family:var(--mono);font-size:.58rem;letter-spacing:.07em;color:var(--amber);margin-bottom:.2rem}
+.rwx{font-family:var(--mono);font-size:.54rem;color:var(--inks);letter-spacing:.07em;margin-bottom:1.1rem}
+.rt{list-style:none;margin-bottom:1.1rem}
+.rt li{font-family:var(--mono);font-size:.56rem;color:var(--inks);padding:.2rem 0;border-bottom:1px solid var(--line);letter-spacing:.02em}
+.rt li:first-child{border-top:1px solid var(--line)}
+.rb{font-family:var(--serif);font-size:.74rem;color:var(--inkm);line-height:1.75}
+.rb strong{color:var(--ink);font-weight:500}
+
+/* CLOSING */
+#closing{min-height:48vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:6rem 2rem;position:relative;overflow:hidden}
+.cwm{position:absolute;font-family:var(--serif);font-size:20rem;font-weight:300;color:var(--ink);opacity:.02;pointer-events:none;user-select:none;line-height:1;letter-spacing:.05em}
+.ctag{font-family:var(--mono);font-size:.56rem;letter-spacing:.2em;color:var(--amber);margin-bottom:2rem}
+.ch{font-family:var(--serif);font-size:clamp(1.8rem,3.2vw,2.8rem);font-weight:300;color:var(--ink);line-height:1.4;letter-spacing:-.01em;position:relative}
+
+/* FOOTER */
+footer{padding:1.1rem 2rem;border-top:1px solid var(--line);background:var(--bg2);font-family:var(--mono);font-size:.54rem;letter-spacing:.08em;color:var(--inks)}
+
+/* LIGHT */
+[data-theme="light"]{
+  --bg:#f5f0e8;--bg2:#ede7d9;--bgcard:#ede7d9;
+  --line:rgba(26,23,20,.09);--lineb:rgba(26,23,20,.16);
+  --ink:#1a1714;--inkm:#3d3730;--inks:#7a6e62;
+  --amber:#b07018;--amberd:rgba(176,112,24,.07);
+}
+[data-theme="light"] body::before{opacity:.015}
+[data-theme="light"] .topbar{background:rgba(245,240,232,.94)}
+
+/* MOBILE */
+.mh{display:none;position:fixed;top:0;left:0;right:0;height:50px;background:var(--bg2);border-bottom:1px solid var(--line);z-index:200;align-items:center;justify-content:space-between;padding:0 1.2rem}
+.ml{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--amber)}
+.mc{display:flex;align-items:center;gap:.7rem}
+.mtb{background:none;border:1px solid var(--line);padding:.2rem .45rem;cursor:pointer;font-family:var(--mono);font-size:.56rem;color:var(--inks);border-radius:2px}
+.mbb{background:none;border:1px solid var(--line);width:30px;height:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.mbb span{display:block;width:13px;height:1px;background:var(--inkm);transition:all .18s}
+.md{display:none;position:fixed;inset:0;z-index:190;background:var(--bg);padding:4.5rem 1.5rem 2rem;flex-direction:column;gap:.1rem}
+.md.open{display:flex}
+.mni{display:flex;align-items:center;gap:.9rem;padding:.9rem 0;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.68rem;letter-spacing:.12em;color:var(--inks);text-decoration:none;transition:color .15s}
+.mni:hover{color:var(--amber)}
+.mnn{font-size:.52rem;color:var(--inks);min-width:1.4rem}
+
+@media(max-width:900px){
+  .sidebar{display:none}
+  .mh{display:flex}
+  .main{margin-left:0;padding-top:50px}
+  .topbar{display:none}
+  .hero-body{grid-template-columns:1fr}
+  .hl{border-right:none;border-bottom:1px solid var(--line);padding:2rem 1.4rem}
+  .hr{min-height:300px}
+  .hm{grid-template-columns:1fr 1fr}
+  .hmi:nth-child(2){border-right:none}
+  .prog-h{grid-template-columns:1fr}
+  .ph:first-child{border-right:none;border-bottom:1px solid var(--line)}
+  .cg{grid-template-columns:1fr}
+  .cl{border-right:none;border-bottom:1px solid var(--line)}
+  .rg{grid-template-columns:1fr}
+  .rc{border-right:none;border-bottom:1px solid var(--line)}
+  .rc:last-child{border-bottom:none}
+  .sh,.sd{flex-wrap:wrap}
+  .sd{margin-left:0;text-align:left}
+}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sb-logo">
+    <p class="sb-kr">공간사색</p>
+    <p class="sb-hanja">空間思索</p>
+    <p class="sb-sub">복합문화예술공간<br>파주 헤이리마을</p>
+  </div>
+  <nav class="sb-nav">
+    <a href="#hero"     class="ni active"><span class="nn">00</span>공간사색</a>
+    <a href="#playlist" class="ni"><span class="nn">01</span>구성</a>
+    <a href="#concept"  class="ni"><span class="nn">02</span>소개</a>
+    <a href="#sns"      class="ni"><span class="nn">03</span>기록</a>
+  </nav>
+  <div class="sb-foot"><span class="dot"></span>화 – 일 운영</div>
+</aside>
+
+<header class="mh">
+  <span class="ml">공간사색 · 空間思索</span>
+  <div class="mc">
+    <button class="mtb" id="mtb">☀</button>
+    <button class="mbb" id="mbb"><span></span><span></span></button>
+  </div>
+</header>
+<div class="md" id="md">
+  <a href="#hero"     class="mni"><span class="mnn">00</span>공간사색</a>
+  <a href="#playlist" class="mni"><span class="mnn">01</span>구성</a>
+  <a href="#concept"  class="mni"><span class="mnn">02</span>소개</a>
+  <a href="#sns"      class="mni"><span class="mnn">03</span>기록</a>
+</div>
+
+<main class="main">
+
+  <div class="topbar">
+    <span class="tb-left">공간사색 · <em>空間思索</em></span>
+    <div class="tb-right">
+      <span class="tb-addr">파주 헤이리마을길 59-45</span>
+      <button id="tt"><span id="ti">☀</span> <span id="tl">Light</span></button>
+    </div>
+  </div>
+
+  <section id="hero">
+    <div class="hero-body">
+      <div class="hl">
+        <div>
+          <p class="eyebrow"><span>복합문화예술공간</span><span>Vintage Audio</span><span>파주 헤이리</span></p>
+          <h1 class="hero-h1">소리 속에서<br>조용히<br><em>사색하는</em> 시간</h1>
+        </div>
+        <p class="hero-sub">그날의 무드에 맞는 음악과 페어링 된 음료</p>
+      </div>
+      <div class="hr">
+        <div class="hp"><img src="./bar.jpg" alt="공간사색 바" loading="lazy"></div>
+        <div class="hcw">
+          <div class="tc">
+            <div class="tch">
+              <span class="tcl">Today's Curation — 오늘의 사색</span>
+              <span class="tcd" id="today-date-el">—</span>
+            </div>
+            <p class="tct" id="today-theme-el"></p>
+            <ul class="tcm" id="today-music-el">
+              <li><span class="tt">—</span><span>불러오는 중...</span></li>
+            </ul>
+            <div class="tcdiv"></div>
+            <div class="tcb">
+              <div class="tcbc"><label>☕ 커피</label><p id="brew-coffee-name">—</p><p class="bn" id="brew-coffee-note"></p></div>
+              <div class="tcbc"><label>🍵 차</label><p id="brew-tea-name">—</p><p class="bn" id="brew-tea-note"></p></div>
+            </div>
+            <p class="tcp" id="today-pairing-el"></p>
+            <div class="tcf"><span>12:00 – 21:00</span><span>📍 파주 헤이리마을</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hm">
+      <div class="hmi"><span class="hmk">Location</span><span class="hmv">파주 헤이리마을</span></div>
+      <div class="hmi"><span class="hmk">Hours</span><span class="hmv">화 – 일 · 12:00–21:00</span></div>
+      <div class="hmi"><span class="hmk">Audio</span><span class="hmv">빈티지 하이엔드</span></div>
+      <div class="hmi"><span class="hmk">Source</span><span class="hmv">LP · CD · 디지털 · 릴 · DAT</span></div>
+    </div>
+  </section>
+
+  <section id="playlist">
+    <div class="sh">
+      <span class="sn">01</span><span class="sk">구성</span><span class="se">Programme</span>
+      <span class="sd">플레이리스트는 그날의 무드에 맞게 고릅니다.<br>앨범 사이에는 짧게 의도된 무음 시간을 둡니다.</span>
+    </div>
+    <div class="prog-h">
+      <div class="ph"><p class="ppn">PART</p><p class="ppl">1부</p></div>
+      <div class="ph"><p class="ppn">PART</p><p class="ppl">2부</p></div>
+    </div>
+    <div class="ps">
+      <div class="psl"></div>
+      <div class="psc">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M4.22 4.22l1.42 1.42M2 12h2M4.22 19.78l1.42-1.42M12 22v-2M19.78 19.78l-1.42-1.42M22 12h-2M19.78 4.22l-1.42 1.42"/><path d="M12 8a4 4 0 0 1 0 8"/><path d="M2 17h20"/></svg>
+        일몰
+      </div>
+      <div class="psl"></div>
+    </div>
+  </section>
+
+  <section id="concept">
+    <div class="sh"><span class="sn">02</span><span class="sk">소개</span><span class="se">About</span></div>
+    <div class="cg">
+      <div class="cl">
+        <p class="ck">空間<br>思索</p>
+        <div class="cb">
+          <p>공간사색(空間思索)은 그날의 무드에 맞는 음악과, 그 음악에 페어링된 음료를 즐기며 잠시 사색할 수 있는 공간입니다.</p>
+          <p>인공조명을 최소화하고 자연광만으로 운영합니다. 시간에 따라 달라지는 빛 속에서 음악을 듣고, 앞마당 중정에서는 계절마다 四色(사색)의 풍경을 만날 수 있습니다.</p>
+          <p>다양한 스피커와 앰프를 매칭하여 설치하고, 빈티지 스피커는 처음 발매됐을 당시 사람들이 들었을 그 소리를 상상할 수 있도록 완벽한 상태를 유지합니다. 아무리 좋은 스피커 시스템이라도 룸튜닝이 되어 있지 않으면 무용지물입니다. 공간사색(空間思索)은 REW로 직접 측정하고 조율하며(주 1회), 소스는 그날에 맞게 LP, CD, 디지털 음원, 릴 테잎, DAT 중에서 고릅니다.</p>
+          <p>음악과 아티스트를 깊이 들여다볼 수 있는 원데이클래스, 청음회, 콜라보레이션 등 다양한 복합문화예술 행사도 함께합니다.</p>
+        </div>
+      </div>
+      <div class="cr">
+        <div class="ip">
+          <p class="ipt">정보 · Info</p>
+          <div class="ir"><span class="ik">주소</span><span class="iv"><a href="https://naver.me/xy751MJ9" target="_blank" class="m">경기도 파주시 탄현면 헤이리마을길 59-45 1층</a></span></div>
+          <div class="ir"><span class="ik">영업시간 및 휴무</span><span class="iv"><a href="https://naver.me/xy751MJ9" target="_blank">영업일 · 시간 확인</a></span></div>
+          <div class="ir"><span class="ik">이메일</span><span class="iv"><span id="email-reveal"></span></span></div>
+          <div class="ir"><span class="ik">전화</span><span class="iv"><a href="tel:050713488623" class="m">0507-1348-8623</a></span></div>
+          <div class="ir"><span class="ik">인스타그램</span><span class="iv"><a href="https://instagram.com/gonggan.sasaek" target="_blank">@gonggan.sasaek</a></span></div>
+          <div class="ir"><span class="ik">유튜브</span><span class="iv"><a href="https://www.youtube.com/@gonggansasaek" target="_blank">youtube.com/@gonggansasaek</a></span></div>
+        </div>
+        <div class="ip">
+          <p class="ipt">사운드 · Sound</p>
+          <div class="ir"><span class="ik">오디오</span><span class="iv">빈티지 하이엔드</span></div>
+          <div class="ir"><span class="ik">룸 어쿠스틱</span><span class="iv">REW 기반 정밀 측정 설계</span></div>
+          <div class="ir"><span class="ik">음원 소스</span><span class="iv">LP · CD · 디지털 · 릴 테잎 · DAT</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sns">
+    <div class="sh">
+      <span class="sn">03</span><span class="sk">기록</span><span class="se">Instagram</span>
+      <span class="sd">날짜, 날씨, 음악, 음료 —<br>쌓이는 아카이브가 공간사색의 기록이 됩니다.</span>
+    </div>
+    <div class="rg">
+      <div class="rc">
+        <p class="ri">REC — 001</p>
+        <p class="rda">2025. 03. 14. 금요일</p><p class="rwx">맑음</p>
+        <ul class="rt"><li>Keith Jarrett — Facing You</li><li>Jan Garbarek — Officium</li><li>Nils Frahm — Spaces</li><li>Arvo Pärt — Tabula Rasa</li></ul>
+        <p class="rb">☕ <strong>케냐 AA</strong> — 블랙커런트, 우수의 여운<br>🍵 <strong>백호은침</strong> — 침묵에 가까운 여운</p>
+      </div>
+      <div class="rc">
+        <p class="ri">REC — 002</p>
+        <p class="rda">2025. 03. 08. 토요일</p><p class="rwx">흐림 후 맑음</p>
+        <ul class="rt"><li>Bill Evans — Explorations</li><li>Miles Davis — Sketches of Spain</li><li>Stan Getz — Focus</li><li>Erik Satie — Gymnopédies</li></ul>
+        <p class="rb">☕ <strong>에티오피아 예가체프</strong> — 플로럴, 봄볕 산미<br>🍵 <strong>허브티</strong> — 여백과 여운</p>
+      </div>
+      <div class="rc">
+        <p class="ri">REC — 003</p>
+        <p class="rda">2025. 03. 01. 토요일</p><p class="rwx">눈</p>
+        <ul class="rt"><li>Arvo Pärt — Spiegel im Spiegel</li><li>Nils Frahm — All Melody</li><li>Harold Budd — The Plateaux of Mirror</li><li>ECM Selected Works</li></ul>
+        <p class="rb">☕ <strong>콜롬비아 후일라</strong> — 다크초콜릿, 캐러멜<br>🍵 <strong>중국 백차</strong> — 눈 내리는 여운</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="closing">
+    <p class="cwm">思索</p>
+    <p class="ctag">空間思索 · Paju Heyri</p>
+    <h2 class="ch">소리 속에서, 오늘을<br>조용히 사색하세요.</h2>
+  </section>
+
+  <footer>© 2025 공간사색 空間思索</footer>
+
+</main>
+
+<script src="./main.js" data-cfasync="false"></script>
+<script data-cfasync="false">
+(function(){
+  var r=document.documentElement,btn=document.getElementById('tt'),mbtn=document.getElementById('mtb'),
+      icon=document.getElementById('ti'),lbl=document.getElementById('tl'),
+      saved=localStorage.getItem('gonggan_theme')||'dark';
+  r.setAttribute('data-theme',saved);
+  if(saved==='light'){if(icon)icon.textContent='☽';if(lbl)lbl.textContent='Dark';if(mbtn)mbtn.textContent='☽';}
+  function tog(){
+    var d=r.getAttribute('data-theme')==='dark',n=d?'light':'dark';
+    r.setAttribute('data-theme',n);localStorage.setItem('gonggan_theme',n);
+    if(icon)icon.textContent=d?'☽':'☀';if(lbl)lbl.textContent=d?'Dark':'Light';
+    if(mbtn)mbtn.textContent=d?'☽':'☀';
+  }
+  if(btn)btn.addEventListener('click',tog);if(mbtn)mbtn.addEventListener('click',tog);
+})();
+(function(){
+  var b=document.getElementById('mbb'),d=document.getElementById('md');
+  if(!b||!d)return;
+  b.addEventListener('click',function(){d.classList.toggle('open')});
+  d.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){d.classList.remove('open')})});
+})();
+(function(){
+  var ss=document.querySelectorAll('section[id]'),ni=document.querySelectorAll('.ni');
+  var obs=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){ni.forEach(function(n){n.classList.remove('active')});var a=document.querySelector('.ni[href="#'+e.target.id+'"]');if(a)a.classList.add('active');}});
+  },{threshold:0.25});
+  ss.forEach(function(s){obs.observe(s)});
+})();
+</script>
+</body>
+</html>
