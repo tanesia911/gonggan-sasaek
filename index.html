@@ -628,6 +628,45 @@
     font-size: .85rem;
     line-height: 1;
   }
+
+  /* ── 구성 섹션: 부 레이블 ── */
+  .part-label-block {
+    display: flex;
+    align-items: baseline;
+    gap: .7rem;
+    padding: 1.4rem 0 .5rem;
+    border-top: 1px solid var(--rule);
+    margin-top: .4rem;
+  }
+  .part-label-block:first-child {
+    border-top: none;
+    padding-top: .2rem;
+  }
+  .part-label {
+    font-family: 'IM Fell English SC', serif;
+    font-size: .95rem;
+    color: var(--amber);
+    letter-spacing: .06em;
+  }
+  .part-duration {
+    font-size: .74rem;
+    color: var(--ink-faint);
+    letter-spacing: .04em;
+  }
+
+  /* ── 안내문 ── */
+  .playlist-note {
+    margin-top: 1.6rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+  }
+  .playlist-note p {
+    font-size: .78rem;
+    color: var(--ink-faint);
+    letter-spacing: .05em;
+  }
+
 </style>
 </head>
 <body>
@@ -637,7 +676,7 @@
   <a href="#" class="nav-logo">공간사색 <span>·</span> 空間思索</a>
   <ul class="nav-links">
     <li><a href="#hero">공간사색</a></li>
-    <li><a href="#playlist">플레이리스트</a></li>
+    <li><a href="#playlist">구성</a></li>
     <li><a href="#concept">소개</a></li>
     <li><a href="#info">안내</a></li>
     <li><a href="#sns">기록</a></li>
@@ -652,7 +691,7 @@
 <!-- 모바일 드로어 -->
 <div class="mobile-menu" id="mobile-menu">
   <a href="#hero" class="mob-link">공간사색</a>
-  <a href="#playlist" class="mob-link">플레이리스트</a>
+  <a href="#playlist" class="mob-link">구성</a>
   <a href="#concept" class="mob-link">소개</a>
   <a href="#info" class="mob-link">안내</a>
   <a href="#sns" class="mob-link">기록</a>
@@ -715,17 +754,19 @@
 <!-- CONCEPT -->
 <section id="playlist">
   <div class="section-inner" style="padding-bottom:1.5rem;">
-    <p class="section-label">플레이리스트 · Playlist</p>
-    <p class="reveal" style="font-family:'Noto Serif KR',serif;font-size:1.05rem;opacity:.8;margin-bottom:.6rem;">매일 다른 플레이리스트</p>
+    <p class="section-label">구성 · Programme</p>
+    <p class="reveal" style="font-family:'Noto Serif KR',serif;font-size:1.05rem;opacity:.8;margin-bottom:.6rem;">매일 다른 구성</p>
     <p class="reveal reveal-delay-1" style="font-size:.82rem;color:var(--ink-soft);line-height:1.9;">날씨와 계절에 맞게 고릅니다. 앨범 사이에는 짧게 의도된 무음 시간을 둡니다.</p>
   </div>
   <div class="playlist-wrap">
     <div class="playlist-grid reveal">
-      <div class="playlist-header">
-        <span class="playlist-theme-txt">겨울의 끝, 봄의 기척</span>
-        <span class="playlist-date-txt">2025. 02. 24. · 흐림</span>
-      </div>
       <div class="pl-rows">
+
+        <div class="part-label-block">
+          <span class="part-label">1부</span>
+          <span class="part-duration">2시간 가량</span>
+        </div>
+
         <div class="time-block">
           <span class="tb-time">12:00</span>
           <p class="tb-artist">Bill Evans Trio</p>
@@ -738,11 +779,18 @@
           <p class="tb-album">The Köln Concert, Part I (1975)</p>
           <p class="tb-duration">26 min</p>
         </div>
+
         <div class="silence-block">
           <span class="silence-label">무음 · Silence</span>
           <div class="silence-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
           <span class="silence-label">5 min</span>
         </div>
+
+        <div class="part-label-block">
+          <span class="part-label">2부</span>
+          <span class="part-duration">2시간 가량</span>
+        </div>
+
         <div class="time-block">
           <span class="tb-time">14:05</span>
           <p class="tb-artist">Miles Davis</p>
@@ -761,16 +809,23 @@
           <p class="tb-album">Meets The Rhythm Section (1957)</p>
           <p class="tb-duration">38 min</p>
         </div>
+
+        <div class="silence-block">
+          <span class="silence-label">무음 · Silence</span>
+          <div class="silence-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <span class="silence-label">5 min</span>
+        </div>
+
+        <div class="part-label-block">
+          <span class="part-label">3부</span>
+          <span class="part-duration">2시간 가량</span>
+        </div>
+
         <div class="time-block">
           <span class="tb-time">16:35</span>
           <p class="tb-artist">Chet Baker</p>
           <p class="tb-album">Chet Baker Sings (1954)</p>
           <p class="tb-duration">32 min</p>
-        </div>
-        <div class="silence-block">
-          <span class="silence-label">무음 · Silence</span>
-          <div class="silence-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <span class="silence-label">5 min</span>
         </div>
         <div class="time-block">
           <span class="tb-time">17:10</span>
@@ -790,22 +845,10 @@
           <p class="tb-album">Spiegel im Spiegel 外</p>
           <p class="tb-duration">30 min</p>
         </div>
-        <div class="closing-time-block">
-          <span class="closing-time-label">— 문을 닫습니다 —</span>
-        </div>
+
       </div>
-      <div class="playlist-footer">
-        <div class="pf-item">
-          <label>☕ 커피</label>
-          <p>콜롬비아 후일라</p>
-          <p class="pf-note">다크초콜릿 · 캐러멜</p>
-        </div>
-        <div class="pf-item">
-          <label>🍵 차</label>
-          <p>백호은침</p>
-          <p class="pf-note">여백 · 여운</p>
-        </div>
-        <p class="pf-pairing">Miles Davis와 Coltrane의 묵직한 밀도감이 후일라의 긴 여운과 닮아 있습니다.</p>
+      <div class="playlist-note">
+        <p>매일매일 조금씩 다를 수 있습니다.</p>
       </div>
     </div>
   </div>
