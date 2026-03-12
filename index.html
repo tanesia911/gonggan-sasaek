@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공간사색 — 空間思索</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400&family=IM+Fell+English+SC&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #f5f0e8;
+    --bg-warm:  #ede7d9;
+    --ink:      #1a1714;
+    --ink-mid:  #3d3730;
+    --ink-soft: #7a6e62;
+    --ink-faint:#b0a496;
+    --amber:    #c8862a;
+    --rule:     rgba(26,23,20,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 999; pointer-events: none;
+    opacity: .028;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 3rem;
+    background: rgba(245,240,232,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-logo {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 400; font-size: .95rem;
+    letter-spacing: .08em;
+    color: var(--ink); text-decoration: none;
+  }
+  .nav-logo span { color: var(--amber); }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a {
+    font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-soft); text-decoration: none;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6rem 4rem 6rem 3rem;
+    border-right: 1px solid var(--rule);
+  }
+  .hero-eyebrow {
+    font-family: 'IM Fell English SC', serif;
+    font-size: .8rem; letter-spacing: .25em;
+    color: var(--ink-soft); margin-bottom: 2.4rem;
+  }
+  .hero-title {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 300; font-size: clamp(2.8rem, 4.5vw, 4.2rem);
+    line-height: 1.25; letter-spacing: -.01em;
+    margin-bottom: 1.8rem;
+  }
+  .hero-title em { font-style: normal; color: var(--amber); }
+  .hero-sub {
+    font-size: .9rem; color: var(--ink-soft);
+    line-height: 2.1; max-width: 380px;
+    margin-bottom: 3.2rem;
+  }
+  .btn-ghost {
+    display: inline-block;
+    font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-soft); text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: .25rem;
+    transition: color .2s, border-color .2s;
+  }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+  .hero-right {
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 3rem;
+    background: var(--bg-warm);
+    position: relative; overflow: hidden;
+  }
+  .vinyl-deco {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 440px; height: 440px; border-radius: 50%;
+    background: repeating-radial-gradient(
+      circle at center,
+      transparent 0, transparent 8px,
+      rgba(26,23,20,.04) 8px, rgba(26,23,20,.04) 9px
+    );
+    animation: slowspin 80s linear infinite;
+  }
+  @keyframes slowspin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+  /* TODAY CARD */
+  .today-card {
+    position: relative; z-index: 2;
+    border: 1px solid var(--rule);
+    background: rgba(245,240,232,.72);
+    backdrop-filter: blur(8px);
+    padding: 1.8rem 2rem;
+  }
+  .today-label {
+    font-size: .65rem; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 1.2rem;
+  }
+  .today-meta {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; color: var(--ink-soft);
+    margin-bottom: .35rem;
+  }
+  .today-theme {
+    font-family: 'Noto Serif KR', serif;
+    font-size: .82rem; color: var(--ink-soft);
+    font-style: italic; margin-bottom: 1.4rem;
+    opacity: .75;
+  }
+  .today-music { margin-bottom: 1.4rem; }
+  .today-music-item {
+    display: flex; align-items: baseline; gap: .6rem;
+    padding: .38rem 0; border-bottom: 1px solid var(--rule);
+    font-size: .82rem;
+  }
+  .today-music-item:last-child { border-bottom: none; }
+  .tm-time { font-size: .65rem; color: var(--amber); min-width: 3rem; }
+  .tm-artist { color: var(--ink-soft); font-size: .75rem; }
+  .tm-album { font-family: 'Noto Serif KR', serif; }
+  .today-divider { border: none; border-top: 1px solid var(--rule); margin: 1.2rem 0; }
+  .today-brew {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .brew-item label {
+    font-size: .62rem; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--ink-faint); display: block; margin-bottom: .3rem;
+  }
+  .brew-item p { font-family: 'Noto Serif KR', serif; font-size: .82rem; }
+  .brew-note { font-size: .7rem; color: var(--ink-soft); margin-top: .15rem; }
+  .pairing-note {
+    font-size: .72rem; color: var(--ink-soft);
+    line-height: 1.7; font-style: italic;
+    border-top: 1px solid var(--rule); padding-top: .9rem;
+  }
+  .today-footer {
+    margin-top: 1rem;
+    font-size: .7rem; color: var(--ink-faint);
+    display: flex; justify-content: space-between;
+  }
+
+  /* SECTION BASE */
+  section { border-top: 1px solid var(--rule); }
+  .section-inner { max-width: 1140px; margin: 0 auto; padding: 6rem 3rem; }
+  .section-label {
+    font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 3rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+  /* CONCEPT */
+  #concept .section-inner {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 5rem; align-items: start;
+  }
+  .concept-kanji {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    font-weight: 300; line-height: 1;
+    color: var(--ink); opacity: .07;
+    writing-mode: vertical-rl;
+    user-select: none; letter-spacing: .1em;
+  }
+  .concept-headline {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 300; font-size: clamp(1.4rem, 2.4vw, 2rem);
+    line-height: 1.7; margin-bottom: 2.4rem;
+  }
+  .concept-text {
+    font-size: .88rem; color: var(--ink-soft);
+    line-height: 2.2; margin-bottom: 1.4rem;
+  }
+  .concept-text:last-child { margin-bottom: 0; }
+
+  /* PLAYLIST */
+  #playlist { background: var(--bg-warm); }
+  .playlist-wrap { max-width: 1140px; margin: 0 auto; padding: 0 3rem 6rem; }
+  .playlist-grid { border: 1px solid var(--rule); }
+  .playlist-header {
+    padding: 1.3rem 1.8rem;
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .playlist-theme-txt {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-style: italic; color: var(--ink-soft);
+  }
+  .playlist-date-txt { font-size: .7rem; color: var(--ink-faint); letter-spacing: .1em; }
+  .pl-rows { display: grid; grid-template-columns: 1fr 1fr; }
+  .time-block {
+    padding: 1.2rem 1.8rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    transition: background .18s;
+  }
+  .time-block:nth-child(even) { border-right: none; }
+  .time-block:hover { background: rgba(200,134,42,.04); }
+  .tb-time { font-size: .63rem; letter-spacing: .15em; color: var(--amber); margin-bottom: .4rem; display: block; }
+  .tb-artist { font-size: .72rem; color: var(--ink-faint); margin-bottom: .2rem; }
+  .tb-album { font-family: 'Noto Serif KR', serif; font-size: .86rem; line-height: 1.4; }
+  .tb-duration { font-size: .66rem; color: var(--ink-faint); margin-top: .35rem; }
+  .silence-block {
+    grid-column: 1 / -1;
+    padding: .7rem 1.8rem;
+    border-bottom: 1px solid var(--rule);
+    background: rgba(26,23,20,.025);
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .silence-label { font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-faint); }
+  .silence-dots { flex: 1; display: flex; gap: 5px; }
+  .silence-dots span { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-faint); opacity: .35; }
+  .playlist-footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.4rem 1.8rem;
+    display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 1.5rem; align-items: start;
+  }
+  .pf-item label { font-size: .62rem; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-faint); display: block; margin-bottom: .3rem; }
+  .pf-item p { font-family: 'Noto Serif KR', serif; font-size: .84rem; }
+  .pf-note { font-size: .7rem; color: var(--ink-soft); margin-top: .15rem; }
+  .pf-pairing { font-size: .75rem; color: var(--ink-soft); line-height: 1.8; font-style: italic; padding-top: 1.4rem; }
+
+  /* INFO */
+  #info .inner-wrap { max-width: 1140px; margin: 0 auto; padding: 6rem 3rem; }
+  .info-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    border: 1px solid var(--rule);
+    margin-top: 0;
+  }
+  .info-block { padding: 2.4rem 2rem; border-right: 1px solid var(--rule); }
+  .info-block:last-child { border-right: none; }
+  .info-block h3 {
+    font-size: .65rem; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--ink-faint); margin-bottom: 1.4rem;
+  }
+  .info-line {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: .55rem 0; border-bottom: 1px solid var(--rule);
+    font-size: .82rem;
+  }
+  .info-line:last-child { border-bottom: none; }
+  .info-line .key { color: var(--ink-soft); }
+  .info-line .val { font-family: 'Noto Serif KR', serif; text-align: right; }
+
+  /* SNS */
+  #sns { background: var(--bg-warm); }
+  .sns-inner { max-width: 1140px; margin: 0 auto; padding: 6rem 3rem; }
+  .sns-feed {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    border: 1px solid var(--rule); background: var(--rule);
+    gap: 1px; margin-top: 2.4rem;
+  }
+  .sns-post { background: var(--bg); padding: 1.6rem; transition: background .18s; }
+  .sns-post:hover { background: var(--bg-warm); }
+  .post-date { font-size: .66rem; letter-spacing: .1em; color: var(--ink-faint); margin-bottom: 1rem; }
+  .post-music { font-family: 'Noto Serif KR', serif; font-size: .82rem; line-height: 2; margin-bottom: 1rem; }
+  .post-music .mi { color: var(--amber); margin-right: .35rem; }
+  .post-divider { border: none; border-top: 1px solid var(--rule); margin: .8rem 0; }
+  .post-brew { font-size: .78rem; color: var(--ink-soft); line-height: 1.9; }
+  .post-brew strong { color: var(--ink); font-weight: 400; }
+  .post-loc { margin-top: 1rem; font-size: .66rem; color: var(--ink-faint); }
+  .sns-cta { text-align: center; margin-top: 2.4rem; }
+  .sns-cta a {
+    display: inline-flex; align-items: center; gap: .6rem;
+    font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-soft); text-decoration: none;
+    border-bottom: 1px solid var(--rule); padding-bottom: .2rem;
+    transition: color .2s, border-color .2s;
+  }
+  .sns-cta a:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+  /* CLOSING */
+  #closing { text-align: center; }
+  #closing .section-inner { padding: 9rem 3rem; }
+  .closing-kanji {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 300; opacity: .06; line-height: 1;
+    margin-bottom: 2.8rem; letter-spacing: .15em;
+  }
+  .closing-headline {
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 300; font-size: clamp(1.4rem, 2.5vw, 2rem);
+    line-height: 1.7; margin-bottom: 1.4rem;
+  }
+  .closing-sub {
+    font-size: .86rem; color: var(--ink-soft);
+    line-height: 2.1; max-width: 480px; margin: 0 auto;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: .7rem; color: var(--ink-faint); letter-spacing: .07em;
+  }
+  footer a { color: var(--ink-faint); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  /* FADE IN */
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease; }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 3rem 1.5rem; border-right: none; border-bottom: 1px solid var(--rule); }
+    .hero-right { padding: 2rem 1.5rem; min-height: 360px; }
+    #concept .section-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .concept-kanji { writing-mode: horizontal-tb; font-size: 3rem; }
+    .pl-rows { grid-template-columns: 1fr; }
+    .time-block { border-right: none; }
+    .time-block:nth-child(even) { border-right: none; }
+    .info-grid { grid-template-columns: 1fr; }
+    .info-block { border-right: none; border-bottom: 1px solid var(--rule); }
+    .info-block:last-child { border-bottom: none; }
+    .playlist-footer { grid-template-columns: 1fr 1fr; }
+    .pf-pairing { grid-column: 1/-1; padding-top: 0; border-top: 1px solid var(--rule); padding-top: 1rem; }
+    .sns-feed { grid-template-columns: 1fr; }
+    .section-inner, .sns-inner, .playlist-wrap { padding-left: 1.5rem; padding-right: 1.5rem; }
+    footer { flex-direction: column; gap: .8rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">공간사색 <span>·</span> 空間思索</a>
+  <ul class="nav-links">
+    <li><a href="#concept">공간</a></li>
+    <li><a href="#playlist">플레이리스트</a></li>
+    <li><a href="#info">안내</a></li>
+    <li><a href="#sns">기록</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left fade-in">
+    <p class="hero-eyebrow">Paju Heyri · Vintage Audio · Listening Space</p>
+    <h1 class="hero-title">
+      소리 속에서<br>
+      조용히<br>
+      <em>사색하는</em> 시간
+    </h1>
+    <p class="hero-sub">
+      빈티지 오디오와 정밀하게 조율된 공간에서 —<br>
+      오늘의 날씨와 계절에 맞는 음악을 듣습니다.<br>
+      그 음악에 어울리는 한 잔이 조용히 곁에 놓입니다.
+    </p>
+    <a href="#concept" class="btn-ghost">공간 알아보기</a>
+  </div>
+
+  <div class="hero-right">
+    <div class="vinyl-deco"></div>
+    <div class="today-card fade-in">
+      <p class="today-label">Today's Curation — 오늘의 사색</p>
+      <p class="today-meta" id="today-date-el">—</p>
+      <p class="today-theme" id="today-theme-el"></p>
+      <div class="today-music" id="today-music-el">
+        <p style="font-size:.78rem;color:var(--ink-faint);">불러오는 중...</p>
+      </div>
+      <hr class="today-divider">
+      <div class="today-brew">
+        <div class="brew-item">
+          <label>☕ 오늘의 커피</label>
+          <p id="brew-coffee-name">—</p>
+          <p class="brew-note" id="brew-coffee-note"></p>
+        </div>
+        <div class="brew-item">
+          <label>🍵 오늘의 차</label>
+          <p id="brew-tea-name">—</p>
+          <p class="brew-note" id="brew-tea-note"></p>
+        </div>
+      </div>
+      <p class="pairing-note" id="today-pairing-el"></p>
+      <div class="today-footer">
+        <span>12:00 – 21:00</span>
+        <span>📍 파주 헤이리마을</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section id="concept">
+  <div class="section-inner">
+    <div class="concept-kanji">空間思索</div>
+    <div class="fade-in">
+      <p class="section-label">공간 · Space</p>
+      <h2 class="concept-headline">
+        소리가 공간을 채우고,<br>
+        사람은 그 안에서 조용히 사색합니다.
+      </h2>
+      <p class="concept-text">
+        공간사색은 19세기 유럽의 살롱 드 뮤지크(Salon de Musique)에서 영감을 받았습니다.
+        쇼팽과 리스트가 연주하던 그 살롱처럼 — 소리가 공간을 채우고, 사람은 그 안에서 천천히 사유합니다.
+        선택을 내려놓는 것에서 사색이 시작됩니다.
+      </p>
+      <p class="concept-text">
+        오늘의 날씨, 계절, 날짜에 맞는 음악을 선정합니다.
+        그 음악이 지닌 질감과 온도에 어울리는 커피 한 종류, 혹은 차 한 종류를 결정합니다.
+        손님은 커피와 차 중 하나만 선택하면 됩니다 — 나머지는 공간이 생각합니다.
+        수준 높은 음료는 그날의 음악과 함께 사색의 일부가 됩니다.
+      </p>
+      <p class="concept-text">
+        오랜 빈티지 오디오에 대한 이해와 정밀하게 조율된 룸 어쿠스틱 위에서,
+        소리는 단순히 재생되는 것이 아니라 공간 안에 현존합니다.
+        빈티지 사운드가 열등한 소리가 아님을 — 이 공간이 증명합니다.
+      </p>
+      <p class="concept-text" style="font-style:italic;opacity:.75;">
+        사색을 강요하지 않습니다. 다만, 이 공간에서는 자연스럽게 그렇게 됩니다.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYLIST -->
+<section id="playlist">
+  <div class="section-inner" style="padding-bottom:1.5rem;">
+    <p class="section-label">플레이리스트 · Playlist</p>
+    <p style="font-family:'Noto Serif KR',serif;font-size:1.05rem;opacity:.8;margin-bottom:.6rem;">매일 달라지는 오늘의 사색</p>
+    <p style="font-size:.82rem;color:var(--ink-soft);line-height:1.9;">날씨와 계절, 그날의 공기에 맞추어 선곡합니다. 앨범과 앨범 사이에는 의도적인 침묵이 있습니다.</p>
+  </div>
+  <div class="playlist-wrap">
+    <div class="playlist-grid fade-in">
+      <div class="playlist-header">
+        <span class="playlist-theme-txt">겨울의 끝, 봄의 기척</span>
+        <span class="playlist-date-txt">2025. 02. 24. · 흐림</span>
+      </div>
+      <div class="pl-rows">
+        <div class="time-block">
+          <span class="tb-time">12:00</span>
+          <p class="tb-artist">Bill Evans Trio</p>
+          <p class="tb-album">Waltz for Debby (1961)</p>
+          <p class="tb-duration">47 min</p>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">13:00</span>
+          <p class="tb-artist">Keith Jarrett</p>
+          <p class="tb-album">The Köln Concert, Part I (1975)</p>
+          <p class="tb-duration">26 min</p>
+        </div>
+        <div class="silence-block">
+          <span class="silence-label">무음 · Silence</span>
+          <div class="silence-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <span class="silence-label">5 min</span>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">14:05</span>
+          <p class="tb-artist">Miles Davis</p>
+          <p class="tb-album">Kind of Blue (1959)</p>
+          <p class="tb-duration">46 min</p>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">15:00</span>
+          <p class="tb-artist">John Coltrane</p>
+          <p class="tb-album">A Love Supreme (1965)</p>
+          <p class="tb-duration">33 min</p>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">15:40</span>
+          <p class="tb-artist">Art Pepper</p>
+          <p class="tb-album">Meets The Rhythm Section (1957)</p>
+          <p class="tb-duration">38 min</p>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">16:35</span>
+          <p class="tb-artist">Chet Baker</p>
+          <p class="tb-album">Chet Baker Sings (1954)</p>
+          <p class="tb-duration">32 min</p>
+        </div>
+        <div class="silence-block">
+          <span class="silence-label">무음 · Silence</span>
+          <div class="silence-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <span class="silence-label">5 min</span>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">17:10</span>
+          <p class="tb-artist">Stan Getz & João Gilberto</p>
+          <p class="tb-album">Getz/Gilberto (1964)</p>
+          <p class="tb-duration">34 min</p>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">17:50</span>
+          <p class="tb-artist">Erik Satie</p>
+          <p class="tb-album">Gymnopédies & Gnossiennes</p>
+          <p class="tb-duration">38 min</p>
+        </div>
+        <div class="time-block">
+          <span class="tb-time">18:30</span>
+          <p class="tb-artist">Arvo Pärt</p>
+          <p class="tb-album">Spiegel im Spiegel 外</p>
+          <p class="tb-duration">30 min</p>
+        </div>
+        <div class="time-block" style="display:flex;align-items:center;justify-content:center;opacity:.3;">
+          <span style="font-size:.72rem;letter-spacing:.1em;color:var(--ink-soft);">— 문을 닫습니다 —</span>
+        </div>
+      </div>
+      <div class="playlist-footer">
+        <div class="pf-item">
+          <label>☕ 커피</label>
+          <p>콜롬비아 후일라</p>
+          <p class="pf-note">다크초콜릿 · 캐러멜</p>
+        </div>
+        <div class="pf-item">
+          <label>🍵 차</label>
+          <p>백호은침</p>
+          <p class="pf-note">여백 · 여운</p>
+        </div>
+        <p class="pf-pairing">Miles Davis와 Coltrane의 묵직한 밀도감이 후일라의 긴 여운과 닮아 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO -->
+<section id="info">
+  <div class="inner-wrap">
+    <p class="section-label">안내 · Info</p>
+    <div class="info-grid">
+      <div class="info-block fade-in">
+        <h3>운영</h3>
+        <div class="info-line"><span class="key">위치</span><span class="val">파주 헤이리마을</span></div>
+        <div class="info-line"><span class="key">영업시간</span><span class="val">12:00 – 21:00</span></div>
+        <div class="info-line"><span class="key">정기휴무</span><span class="val">매주 월요일</span></div>
+        <div class="info-line"><span class="key">좌석</span><span class="val">최대 32석</span></div>
+      </div>
+      <div class="info-block fade-in">
+        <h3>경험</h3>
+        <div class="info-line"><span class="key">음악 선정</span><span class="val">날씨 · 계절 · 날짜</span></div>
+        <div class="info-line"><span class="key">음료 선택</span><span class="val">커피 또는 차</span></div>
+        <div class="info-line"><span class="key">원두 · 차 결정</span><span class="val">공간이 결정</span></div>
+        <div class="info-line"><span class="key">앨범 간 침묵</span><span class="val">의도적 무음</span></div>
+        <div class="info-line"><span class="key">체류시간</span><span class="val">제한 없음</span></div>
+      </div>
+      <div class="info-block fade-in">
+        <h3>사운드</h3>
+        <div class="info-line"><span class="key">오디오</span><span class="val">빈티지 하이엔드</span></div>
+        <div class="info-line"><span class="key">음원</span><span class="val">Hi-Res 디지털</span></div>
+        <div class="info-line"><span class="key">룸 어쿠스틱</span><span class="val">정밀 측정 설계</span></div>
+        <div class="info-line"><span class="key">저작권</span><span class="val">KOMCA · FONO 등록</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SNS -->
+<section id="sns">
+  <div class="sns-inner">
+    <p class="section-label">기록 · Instagram</p>
+    <p style="font-family:'Noto Serif KR',serif;font-size:1.05rem;opacity:.8;margin-bottom:.5rem;">매일의 사색을 기록합니다</p>
+    <p style="font-size:.82rem;color:var(--ink-soft);line-height:1.9;">날짜, 날씨, 음악, 음료 — 쌓이는 아카이브가 공간사색의 역사가 됩니다.</p>
+    <div class="sns-feed fade-in">
+      <div class="sns-post">
+        <p class="post-date">2025. 03. 14. 금요일 · 맑음</p>
+        <div class="post-music">
+          <div><span class="mi">♩</span>Keith Jarrett — Facing You</div>
+          <div><span class="mi">♩</span>Jan Garbarek — Officium</div>
+          <div><span class="mi">♩</span>Nils Frahm — Spaces</div>
+          <div><span class="mi">♩</span>Arvo Pärt — Tabula Rasa</div>
+        </div>
+        <hr class="post-divider">
+        <p class="post-brew">☕ <strong>케냐 AA</strong> — 블랙커런트, 우수의 여운<br>🍵 <strong>백호은침</strong> — 침묵에 가까운 여운</p>
+        <p class="post-loc">12:00 – 21:00 · 📍 파주 헤이리</p>
+      </div>
+      <div class="sns-post">
+        <p class="post-date">2025. 03. 08. 토요일 · 흐림 후 맑음</p>
+        <div class="post-music">
+          <div><span class="mi">♩</span>Bill Evans — Explorations</div>
+          <div><span class="mi">♩</span>Miles Davis — Sketches of Spain</div>
+          <div><span class="mi">♩</span>Stan Getz — Focus</div>
+          <div><span class="mi">♩</span>Erik Satie — Gymnopédies</div>
+        </div>
+        <hr class="post-divider">
+        <p class="post-brew">☕ <strong>에티오피아 예가체프</strong> — 플로럴, 봄볕 산미<br>🍵 <strong>허브티</strong> — 여백과 여운</p>
+        <p class="post-loc">12:00 – 21:00 · 📍 파주 헤이리</p>
+      </div>
+      <div class="sns-post">
+        <p class="post-date">2025. 03. 01. 토요일 · 눈</p>
+        <div class="post-music">
+          <div><span class="mi">♩</span>Arvo Pärt — Spiegel im Spiegel</div>
+          <div><span class="mi">♩</span>Nils Frahm — All Melody</div>
+          <div><span class="mi">♩</span>Harold Budd — The Plateaux of Mirror</div>
+          <div><span class="mi">♩</span>ECM Selected Works</div>
+        </div>
+        <hr class="post-divider">
+        <p class="post-brew">☕ <strong>콜롬비아 후일라</strong> — 다크초콜릿, 캐러멜<br>🍵 <strong>중국 백차</strong> — 눈 내리는 여운</p>
+        <p class="post-loc">12:00 – 21:00 · 📍 파주 헤이리</p>
+      </div>
+    </div>
+    <div class="sns-cta">
+      <a href="https://instagram.com" target="_blank">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        인스타그램에서 더 보기
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section id="closing">
+  <div class="section-inner">
+    <p class="closing-kanji">思索</p>
+    <h2 class="closing-headline fade-in">소리 속에서, 오늘을<br>조용히 사색하세요.</h2>
+    <p class="closing-sub fade-in">파주 헤이리마을의 빈티지 오디오 청음 공간.<br>화요일부터 일요일, 낮 12시부터 밤 9시까지.</p>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 공간사색 空間思索 · 파주 헤이리마을</span>
+  <span>화–일 12:00–21:00 · 월요일 정기휴무</span>
+  <a href="https://instagram.com" target="_blank">Instagram</a>
+</footer>
+
+<script>
+// ── today.json 로드 ──
+// 사용법: 같은 폴더의 today.json만 매일 수정하면 자동 반영됩니다.
+async function loadToday() {
+  try {
+    const res = await fetch('./today.json?v=' + Date.now());
+    if (!res.ok) throw new Error();
+    const d = await res.json();
+
+    document.getElementById('today-date-el').textContent =
+      d.date + (d.weather ? ' · ' + d.weather : '');
+    document.getElementById('today-theme-el').textContent = d.theme || '';
+
+    if (d.playlist && d.playlist.length) {
+      const show = d.playlist.slice(0, 5);
+      document.getElementById('today-music-el').innerHTML =
+        show.map(t =>
+          `<div class="today-music-item">
+            <span class="tm-time">${t.time}</span>
+            <span class="tm-artist">${t.artist}</span>
+            <span class="tm-album">&nbsp;${t.album}</span>
+          </div>`
+        ).join('') +
+        (d.playlist.length > 5
+          ? `<div style="font-size:.68rem;color:var(--ink-faint);padding:.5rem 0 0;">외 ${d.playlist.length - 5}곡</div>`
+          : '');
+    }
+
+    if (d.coffee) {
+      document.getElementById('brew-coffee-name').textContent = d.coffee.origin || '—';
+      document.getElementById('brew-coffee-note').textContent = d.coffee.note || '';
+    }
+    if (d.tea) {
+      document.getElementById('brew-tea-name').textContent = d.tea.name || '—';
+      document.getElementById('brew-tea-note').textContent = d.tea.note || '';
+    }
+    if (d.pairing_reason) {
+      document.getElementById('today-pairing-el').textContent = d.pairing_reason;
+    }
+
+  } catch {
+    document.getElementById('today-date-el').textContent = '오늘의 큐레이션을 준비 중입니다';
+    document.getElementById('today-music-el').innerHTML =
+      '<p style="font-size:.78rem;color:var(--ink-faint);padding:.5rem 0;">매일 오전 업데이트됩니다</p>';
+  }
+}
+loadToday();
+
+// ── 스크롤 페이드인 ──
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+// ── 부드러운 앵커 스크롤 ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>

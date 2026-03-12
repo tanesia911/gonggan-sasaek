@@ -1,0 +1,23 @@
+{
+  "date": "2025. 03. 12. 수요일",
+  "weather": "맑음",
+  "theme": "이른 봄, 빛이 길어지는 오후",
+  "playlist": [
+    { "time": "12:00", "artist": "Bill Evans Trio", "album": "Waltz for Debby", "year": "1961", "duration": "47 min" },
+    { "time": "13:00", "artist": "Keith Jarrett", "album": "The Köln Concert, Part I", "year": "1975", "duration": "26 min" },
+    { "time": "14:05", "artist": "Miles Davis", "album": "Kind of Blue", "year": "1959", "duration": "46 min" },
+    { "time": "15:00", "artist": "John Coltrane", "album": "A Love Supreme", "year": "1965", "duration": "33 min" },
+    { "time": "16:35", "artist": "Chet Baker", "album": "Chet Baker Sings", "year": "1954", "duration": "32 min" },
+    { "time": "17:50", "artist": "Erik Satie", "album": "Gymnopédies & Gnossiennes", "year": "", "duration": "38 min" },
+    { "time": "18:30", "artist": "Arvo Pärt", "album": "Spiegel im Spiegel 外", "year": "1978", "duration": "30 min" }
+  ],
+  "coffee": {
+    "origin": "콜롬비아 후일라",
+    "note": "다크초콜릿 · 캐러멜"
+  },
+  "tea": {
+    "name": "백호은침",
+    "note": "여백 · 여운"
+  },
+  "pairing_reason": "Miles Davis와 Coltrane의 묵직한 밀도감이 후일라의 긴 여운과 닮아 있습니다."
+}
