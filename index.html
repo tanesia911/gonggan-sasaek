@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공간사색 — 空間思索 | 파주 헤이리 빈티지 오디오 청음 공간</title>
+<title>공간사색 — 空間思索</title>
 <meta name="description" content="소리에 머무는 시간. 파주 헤이리마을의 예약제 빈티지 오디오 청음 공간. 매일 날씨와 계절에 맞는 음악과 음료를 큐레이션합니다.">
 <meta name="keywords" content="공간사색, 파주카페, 헤이리마을, 청음실, 빈티지오디오, 진공관앰프, 재즈카페, 파주헤이리">
 <meta name="author" content="공간사색">
@@ -667,6 +667,114 @@
     letter-spacing: .05em;
   }
 
+
+  /* ── 구성(Programme) 새 디자인 ── */
+  .programme-wrap {
+    max-width: 560px;
+    margin: 0 auto;
+    padding-top: 0;
+  }
+  .programme-part {
+    padding: 2rem 0 1.6rem;
+    border-top: 1px solid var(--rule);
+  }
+  .programme-part:first-child {
+    border-top: none;
+    padding-top: .4rem;
+  }
+  .programme-part-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: .7rem;
+  }
+  .programme-num {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 1.5rem;
+    color: var(--amber);
+    letter-spacing: .04em;
+    min-width: 2rem;
+  }
+  .programme-duration {
+    font-size: .74rem;
+    color: var(--ink-faint);
+    letter-spacing: .06em;
+  }
+  .programme-desc {
+    font-size: .85rem;
+    color: var(--ink-soft);
+    line-height: 1.85;
+    padding-left: 3rem;
+  }
+  .programme-silence {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .6rem 0;
+    color: var(--ink-faint);
+    font-size: .7rem;
+    letter-spacing: .1em;
+  }
+  .silence-line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  .programme-note {
+    margin-top: 2.4rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--rule);
+    font-size: .76rem;
+    color: var(--ink-faint);
+    letter-spacing: .06em;
+    text-align: center;
+  }
+
+
+  /* ── 구성 새 디자인: 1부/일몰/2부 ── */
+  .programme-wrap {
+    max-width: 440px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 1rem 0 2rem;
+  }
+  .programme-act {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.8rem 0;
+  }
+  .programme-act-num {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 3.2rem;
+    color: var(--amber);
+    letter-spacing: .08em;
+    line-height: 1;
+    opacity: .85;
+  }
+  .programme-sunset {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .6rem 0;
+  }
+  .sunset-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--rule), transparent);
+  }
+  .sunset-icon {
+    color: var(--amber);
+    opacity: .7;
+    display: flex;
+    align-items: center;
+  }
+
 </style>
 </head>
 <body>
@@ -680,7 +788,7 @@
     <li><a href="#concept">소개</a></li>
     <li><a href="#info">안내</a></li>
     <li><a href="#sns">기록</a></li>
-    <li><a href="#contact">찾아오시는 길</a></li>
+    <li></li>
   </ul>
   <button id="theme-toggle" aria-label="다크모드 전환"><span class="toggle-icon">☀</span><span class="toggle-label">Light</span></button>
   <button class="nav-burger" id="burger" aria-label="메뉴">
@@ -747,7 +855,7 @@
   </div>
 
     <div style="text-align:center;padding-bottom:2rem;">
-      <a href="#playlist" class="section-next">플레이리스트 보기 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
+      <a href="#playlist" class="section-next">구성 보기 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
     </div>
 </section>
 
@@ -755,107 +863,37 @@
 <section id="playlist">
   <div class="section-inner" style="padding-bottom:1.5rem;">
     <p class="section-label">구성 · Programme</p>
-    <p class="reveal" style="font-family:'Noto Serif KR',serif;font-size:1.05rem;opacity:.8;margin-bottom:.6rem;">매일 다른 구성</p>
+    <h2 class="reveal" style="font-size:1.6rem;font-weight:400;margin-bottom:.5rem;">매일 다른 구성</h2>
     <p class="reveal reveal-delay-1" style="font-size:.82rem;color:var(--ink-soft);line-height:1.9;">날씨와 계절에 맞게 고릅니다. 앨범 사이에는 짧게 의도된 무음 시간을 둡니다.</p>
   </div>
-  <div class="playlist-wrap">
-    <div class="playlist-grid reveal">
-      <div class="pl-rows">
 
-        <div class="part-label-block">
-          <span class="part-label">1부</span>
-          <span class="part-duration">2시간 가량</span>
-        </div>
+  <div class="section-inner programme-wrap reveal">
 
-        <div class="time-block">
-          <span class="tb-time">12:00</span>
-          <p class="tb-artist">Bill Evans Trio</p>
-          <p class="tb-album">Waltz for Debby (1961)</p>
-          <p class="tb-duration">47 min</p>
-        </div>
-        <div class="time-block">
-          <span class="tb-time">13:00</span>
-          <p class="tb-artist">Keith Jarrett</p>
-          <p class="tb-album">The Köln Concert, Part I (1975)</p>
-          <p class="tb-duration">26 min</p>
-        </div>
-
-        <div class="silence-block">
-          <span class="silence-label">무음 · Silence</span>
-          <div class="silence-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <span class="silence-label">5 min</span>
-        </div>
-
-        <div class="part-label-block">
-          <span class="part-label">2부</span>
-          <span class="part-duration">2시간 가량</span>
-        </div>
-
-        <div class="time-block">
-          <span class="tb-time">14:05</span>
-          <p class="tb-artist">Miles Davis</p>
-          <p class="tb-album">Kind of Blue (1959)</p>
-          <p class="tb-duration">46 min</p>
-        </div>
-        <div class="time-block">
-          <span class="tb-time">15:00</span>
-          <p class="tb-artist">John Coltrane</p>
-          <p class="tb-album">A Love Supreme (1965)</p>
-          <p class="tb-duration">33 min</p>
-        </div>
-        <div class="time-block">
-          <span class="tb-time">15:40</span>
-          <p class="tb-artist">Art Pepper</p>
-          <p class="tb-album">Meets The Rhythm Section (1957)</p>
-          <p class="tb-duration">38 min</p>
-        </div>
-
-        <div class="silence-block">
-          <span class="silence-label">무음 · Silence</span>
-          <div class="silence-dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-          <span class="silence-label">5 min</span>
-        </div>
-
-        <div class="part-label-block">
-          <span class="part-label">3부</span>
-          <span class="part-duration">2시간 가량</span>
-        </div>
-
-        <div class="time-block">
-          <span class="tb-time">16:35</span>
-          <p class="tb-artist">Chet Baker</p>
-          <p class="tb-album">Chet Baker Sings (1954)</p>
-          <p class="tb-duration">32 min</p>
-        </div>
-        <div class="time-block">
-          <span class="tb-time">17:10</span>
-          <p class="tb-artist">Stan Getz & João Gilberto</p>
-          <p class="tb-album">Getz/Gilberto (1964)</p>
-          <p class="tb-duration">34 min</p>
-        </div>
-        <div class="time-block">
-          <span class="tb-time">17:50</span>
-          <p class="tb-artist">Erik Satie</p>
-          <p class="tb-album">Gymnopédies & Gnossiennes</p>
-          <p class="tb-duration">38 min</p>
-        </div>
-        <div class="time-block">
-          <span class="tb-time">18:30</span>
-          <p class="tb-artist">Arvo Pärt</p>
-          <p class="tb-album">Spiegel im Spiegel 外</p>
-          <p class="tb-duration">30 min</p>
-        </div>
-
-      </div>
-      <div class="playlist-note">
-        <p>매일매일 조금씩 다를 수 있습니다.</p>
-      </div>
+    <div class="programme-act">
+      <div class="programme-act-num">I</div>
     </div>
+
+    <div class="programme-sunset">
+      <div class="sunset-line"></div>
+      <span class="sunset-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v2M4.22 4.22l1.42 1.42M2 12h2M4.22 19.78l1.42-1.42M12 22v-2M19.78 19.78l-1.42-1.42M22 12h-2M19.78 4.22l-1.42 1.42"/>
+          <path d="M12 8a4 4 0 0 1 0 8"/>
+          <path d="M2 17h20"/>
+        </svg>
+      </span>
+      <div class="sunset-line"></div>
+    </div>
+
+    <div class="programme-act">
+      <div class="programme-act-num">II</div>
+    </div>
+
   </div>
 
-    <div style="text-align:center;padding-bottom:2rem;">
-      <a href="#concept" class="section-next">공간 소개 보기 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
-    </div>
+  <div style="text-align:center;padding-bottom:2rem;margin-top:2.5rem;">
+    <a href="#concept" class="section-next">공간 소개 보기 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
+  </div>
 </section>
 
 <!-- PLAYLIST -->
@@ -865,23 +903,15 @@
     <div class="reveal reveal-delay-1">
       <p class="section-label">공간 · Space</p>
       <h2 class="concept-headline">
-        음악이 흐르는 동안,<br>
-        잠깐 아무것도 안 해도 되는 공간입니다.
+        아무것도 안 해도 되는<br>공간입니다.
       </h2>
-      <p class="concept-text">
-        메뉴판이 없습니다. 2가지 음료 중 하나만 고르면, 나머지는 저희가 정합니다.
-        그날의 날씨나 계절에 맞는 음악을 고르고, 그 음악에 어울리는 원두와 차를 결정하는 게 저희의 하루 일과입니다.
-      </p>
-      <p class="concept-text">
-        
-      </p>
+
+
       <p class="concept-text">
         다양한 스피커와 앰프를 매칭하여 설치하고, 빈티지 스피커는 처음 발매됐을 당시 사람들이 들었을 그 소리를 상상할 수 있도록 완벽한 상태를 유지합니다.
         룸 어쿠스틱은 직접 측정해서 조율하고, 소스는 그날에 맞게 LP, CD, 디지털 음원, 릴 테잎, DAT 중에서 고릅니다.
       </p>
-      <p class="concept-text" style="font-style:italic;opacity:.75;">
-        자연스럽게 사색하게 되는 그런 공간을 제공합니다.
-      </p>
+
     </div>
   </div>
 
@@ -895,34 +925,55 @@
   <div class="inner-wrap">
     <p class="section-label">안내 · Info</p>
     <div class="info-grid">
+
       <div class="info-block reveal">
         <h3>운영</h3>
+        <div class="info-line">
+          <span class="key">영업시간 및 휴무</span>
+          <span class="val">
+            <a href="https://naver.me/xy751MJ9" target="_blank" style="color:var(--amber);text-decoration:none;border-bottom:1px solid var(--amber);padding-bottom:.05em;">네이버 지도에서 확인</a>
+          </span>
+        </div>
         <div class="info-line"><span class="key">위치</span><span class="val">파주 헤이리마을</span></div>
-        <div class="info-line"><span class="key">영업시간</span><span class="val">12:00 – 21:00</span></div>
-        <div class="info-line"><span class="key">정기휴무</span><span class="val">매주 월요일</span></div>
-        <div class="info-line"><span class="key">좌석</span><span class="val">최대 32석</span></div>
       </div>
+
       <div class="info-block reveal reveal-delay-1">
-        <h3>경험</h3>
-        <div class="info-line"><span class="key">음악 선정</span><span class="val">날씨 · 계절 · 날짜</span></div>
-        <div class="info-line"><span class="key">음료 선택</span><span class="val">커피 또는 차</span></div>
-        <div class="info-line"><span class="key">원두 · 차 결정</span><span class="val">음악과 페어링</span></div>
-        <div class="info-line"><span class="key">앨범 간 침묵</span><span class="val">의도적 무음</span></div>
-        <div class="info-line"><span class="key">체류시간</span><span class="val">제한 없음</span></div>
-      </div>
-      <div class="info-block reveal reveal-delay-2">
         <h3>사운드</h3>
         <div class="info-line"><span class="key">오디오</span><span class="val">빈티지 하이엔드</span></div>
-        <div class="info-line"><span class="key">룸 어쿠스틱</span><span class="val">정밀 측정 설계</span></div>
-      <div class="info-line"><span class="key">음원 소스</span><span class="val">LP / CD / 디지털 / 릴 테잎 / DAT</span></div>
-        <div class="info-line"><span class="key">저작권</span><span class="val">KOMCA · FONO 등록</span></div>
+        <div class="info-line"><span class="key">룸 어쿠스틱</span><span class="val">REW 기반 정밀 측정 설계</span></div>
+        <div class="info-line"><span class="key">음원 소스</span><span class="val">LP · CD · 디지털 · 릴 테잎 · DAT</span></div>
       </div>
+
+      <div class="info-block reveal reveal-delay-2">
+        <h3>정보</h3>
+        <div class="info-line">
+          <span class="key">이메일</span>
+          <span class="val"><span id="email-reveal"></span></span>
+        </div>
+        <div class="info-line">
+          <span class="key">전화</span>
+          <span class="val"><a href="tel:050713488623" style="color:inherit;text-decoration:none;">0507-1348-8623</a></span>
+        </div>
+        <div class="info-line">
+          <span class="key">주소</span>
+          <span class="val">경기도 파주시 탄현면 헤이리마을길 59-45 1층</span>
+        </div>
+        <div class="info-line">
+          <span class="key">인스타그램</span>
+          <span class="val"><a href="https://instagram.com/gonggan.sasaek" target="_blank" style="color:var(--amber);text-decoration:none;border-bottom:1px solid var(--amber);padding-bottom:.05em;">@gonggan.sasaek</a></span>
+        </div>
+        <div class="info-line">
+          <span class="key">유튜브</span>
+          <span class="val"><a href="https://youtube.com/@gonggansasaek" target="_blank" style="color:var(--amber);text-decoration:none;border-bottom:1px solid var(--amber);padding-bottom:.05em;">@gonggansasaek</a></span>
+        </div>
+      </div>
+
     </div>
   </div>
 
-    <div style="text-align:center;padding-bottom:2rem;">
-      <a href="#sns" class="section-next">기록 보기 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
-    </div>
+  <div style="text-align:center;padding-bottom:2rem;">
+    <a href="#sns" class="section-next">기록 보기 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
+  </div>
 </section>
 
 <!-- SNS -->
@@ -993,71 +1044,12 @@
   </div>
 
     <div style="text-align:center;padding-bottom:2rem;">
-      <a href="#contact" class="section-next">찾아오시는 길 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
+      <a href="#closing" class="section-next">마치며 &nbsp; <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
     </div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact">
-  <div class="section-inner">
-    <div class="reveal">
-      <p class="section-label">찾아오시는 길 · Contact</p>
-      <h2 class="contact-headline">
-        파주 헤이리마을에서<br>만나뵙겠습니다.
-      </h2>
-      <p class="contact-sub">궁금하신 점은 이메일이나 전화로 편하게 연락주세요.</p>
-      <ul class="contact-list" style="margin-top:2rem;">
-        <li class="contact-item">
-          <div class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l9 6 9-6M3 8v10a1 1 0 001 1h16a1 1 0 001-1V8M3 8a1 1 0 011-1h16a1 1 0 011 1"/></svg>
-          </div>
-          <div class="contact-info">
-            <label>이메일</label>
-            <span id="email-reveal"></span><script data-cfasync="false">document.getElementById("email-reveal").textContent="gonggan-sasaek"+"@"+"naver.com";</script>
-          </div>
-        </li>
-        <li class="contact-item">
-          <div class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-          </div>
-          <div class="contact-info">
-            <label>전화</label>
-            <a href="tel:050713488623">0507-1348-8623</a>
-          </div>
-        </li>
-        <li class="contact-item">
-          <div class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          </div>
-          <div class="contact-info">
-            <label>주소</label>
-            <p>경기도 파주시 탄현면 헤이리마을길 59-45 1층</p>
-            <div style="display:flex;gap:.8rem;margin-top:.8rem;flex-wrap:wrap;align-items:center;">
-              <a href="https://map.naver.com/v5/search/경기도 파주시 탄현면 헤이리마을길 59-45" target="_blank" style="display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;letter-spacing:.06em;color:var(--ink-soft);text-decoration:none;border:1px solid var(--rule);padding:.35rem .8rem;transition:background .2s,color .2s;border-radius:2px;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
-                네이버 지도
-              </a>
-              <a href="tmap://search?name=경기도 파주시 탄현면 헤이리마을길 59-45" target="_blank" style="display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;letter-spacing:.06em;color:var(--ink-soft);text-decoration:none;border:1px solid var(--rule);padding:.35rem .8rem;transition:background .2s,color .2s;border-radius:2px;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-                티맵
-              </a>
-            </div>
-          </div>
-        </li>
-        <li class="contact-item">
-          <div class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <div class="contact-info">
-            <label>영업시간</label>
-            <p>화 – 일 &nbsp;12:00 – 21:00 &nbsp;(월 정기휴무)</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-  
-  </div>
-</section>
+
 
 <!-- CLOSING -->
 <section id="closing">
