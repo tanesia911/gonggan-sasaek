@@ -489,6 +489,21 @@
 
     footer { flex-direction: column; align-items: flex-start; gap: .6rem; padding: 1.5rem; }
   }
+
+  /* ── 위로가기 버튼 ── */
+  #scroll-top {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 500;
+    width: 44px; height: 44px;
+    background: var(--bg); border: 1px solid var(--rule);
+    color: var(--ink-soft); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s, background .2s, color .2s;
+  }
+  #scroll-top.visible { opacity: 1; pointer-events: auto; }
+  #scroll-top:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  #scroll-top svg { width: 16px; height: 16px; }
+
 </style>
 </head>
 <body>
@@ -875,6 +890,12 @@
     @gonggan.sasaek
   </a>
 </footer>
+<button id="scroll-top" aria-label="맨 위로">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+</button>
+
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false">
 // ── 햄버거 메뉴 ──
@@ -892,6 +913,20 @@ document.querySelectorAll('.mob-link').forEach(a => {
     burger.classList.remove('open');
     mobileMenu.classList.remove('open');
   });
+});
+
+
+// ── 위로가기 버튼 ──
+const scrollTopBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 400) {
+    scrollTopBtn.classList.add('visible');
+  } else {
+    scrollTopBtn.classList.remove('visible');
+  }
+}, { passive: true });
+scrollTopBtn.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // ── 스무스 스크롤 (nav offset 보정) ──
