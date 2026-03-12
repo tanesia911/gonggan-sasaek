@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="EUC-KR">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>공간사색 :: 空間思索 - 파주 헤이리 빈티지 오디오 청음공간</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400&display=swap" media="print" onload="this.media='all'">
+  <style>
+    body {
+      background-color: #c8c4b8;
+      background-image: url("data:image/svg+xml,%3Csvg width='4' height='4' viewBox='0 0 4 4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='2' height='2' fill='%23bfbbb0' opacity='0.4'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%23bfbbb0' opacity='0.4'/%3E%3C/svg%3E");
+      margin: 0; padding: 8px 0;
+      font-family: '굴림', 'Gulim', 'Arial', sans-serif;
+      font-size: 12px;
+      color: #222222;
+    }
+
+    /* 전체 wrapper - 800px 고정 */
+    #wrap {
+      width: 780px;
+      margin: 0 auto;
+    }
+
+    /* 상단 타이틀 바 */
+    #header {
+      background: #2d4a6e;
+      border: 2px solid #1a2e44;
+      padding: 0;
+      margin-bottom: 4px;
+    }
+    #header-inner {
+      background: linear-gradient(to right, #3a5f8a, #2d4a6e, #1e3350);
+      padding: 12px 16px 10px;
+      border-bottom: 1px solid #4a7aaa;
+    }
+    #site-title {
+      font-family: 'Noto Serif KR', '바탕', 'Batang', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: #f0e8d0;
+      letter-spacing: 3px;
+      text-shadow: 1px 1px 2px #000;
+      margin: 0;
+    }
+    #site-subtitle {
+      font-size: 10px;
+      color: #9ab8d4;
+      margin-top: 3px;
+      letter-spacing: 1px;
+    }
+    #header-nav {
+      background: #1e3350;
+      padding: 4px 16px;
+      border-top: 1px solid #4a7aaa;
+    }
+    #header-nav a {
+      color: #c8dcea;
+      font-size: 11px;
+      text-decoration: none;
+      margin-right: 2px;
+      padding: 2px 8px;
+      background: #2d4a6e;
+      border: 1px solid #4a7aaa;
+      display: inline-block;
+    }
+    #header-nav a:hover { background: #3a5f8a; color: #fff; }
+
+    /* 메인 레이아웃 - 테이블 */
+    #main-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #main-table td {
+      vertical-align: top;
+    }
+
+    /* 왼쪽 사이드 */
+    #left-col {
+      width: 160px;
+      padding-right: 4px;
+    }
+
+    /* 사이드바 박스 */
+    .side-box {
+      background: #e8e4dc;
+      border: 1px solid #999;
+      border-top: 2px solid #2d4a6e;
+      margin-bottom: 6px;
+    }
+    .side-box-title {
+      background: #2d4a6e;
+      color: #e8dfc8;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 8px;
+      letter-spacing: 1px;
+    }
+    .side-box-body {
+      padding: 6px 8px;
+    }
+    .side-menu a {
+      display: block;
+      color: #1a3a5c;
+      text-decoration: none;
+      font-size: 11px;
+      padding: 3px 4px;
+      border-bottom: 1px dotted #bbb;
+    }
+    .side-menu a:hover {
+      background: #d0ccc0;
+      color: #000;
+    }
+    .side-menu a::before { content: "▶ "; font-size: 9px; color: #2d4a6e; }
+    .side-info {
+      font-size: 10px;
+      color: #444;
+      line-height: 1.7;
+    }
+    .side-info b { color: #2d4a6e; }
+
+    /* 오른쪽 메인 */
+    #right-col { padding-left: 4px; }
+
+    /* 메인 콘텐츠 박스 */
+    .main-box {
+      background: #f0ece4;
+      border: 1px solid #999;
+      border-top: 3px solid #2d4a6e;
+      margin-bottom: 6px;
+    }
+    .main-box-title {
+      background: #ddd8cc;
+      border-bottom: 1px solid #bbb;
+      padding: 5px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .main-box-title .ico { font-size: 14px; }
+    .main-box-title .ttl {
+      font-family: 'Noto Serif KR', '바탕', serif;
+      font-size: 13px;
+      font-weight: bold;
+      color: #1a2e44;
+    }
+    .main-box-title .sub {
+      font-size: 10px;
+      color: #666;
+      margin-left: auto;
+    }
+    .main-box-body { padding: 10px 12px; }
+
+    /* 히어로 박스 */
+    #hero-box {
+      background: #1e2e1e;
+      border: 2px inset #333;
+      padding: 20px 16px;
+      margin-bottom: 6px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    #hero-kanji {
+      font-family: 'Noto Serif KR', '바탕', serif;
+      font-size: 52px;
+      color: #8aaa6a;
+      opacity: 0.15;
+      position: absolute;
+      right: 16px; top: 8px;
+      line-height: 1;
+      pointer-events: none;
+    }
+    #hero-box h1 {
+      font-family: 'Noto Serif KR', '바탕', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #d4c89a;
+      margin: 0 0 8px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px rgba(200,180,100,0.3);
+      position: relative;
+    }
+    #hero-box h1 em { color: #c8a040; font-style: normal; }
+    #hero-box p {
+      font-size: 11px;
+      color: #8a9a7a;
+      margin: 4px 0;
+      letter-spacing: 1px;
+      position: relative;
+    }
+    .hero-divider {
+      border: none;
+      border-top: 1px dashed #4a5a3a;
+      margin: 10px auto;
+      width: 80%;
+    }
+
+    /* 오늘의 사색 카드 */
+    #today-card {
+      background: #e8e2d4;
+      border: 1px solid #aaa;
+      border-top: 2px solid #5a7a3a;
+    }
+    .today-card-head {
+      background: #5a7a3a;
+      color: #e8f0d8;
+      font-size: 10px;
+      padding: 3px 8px;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+    .today-card-body { padding: 8px; }
+    .today-meta-row {
+      display: flex; gap: 8px;
+      font-size: 10px; color: #555;
+      margin-bottom: 6px;
+      border-bottom: 1px dotted #bbb;
+      padding-bottom: 4px;
+    }
+    .today-meta-row span { color: #1a3a1a; font-weight: bold; }
+    #today-music-el {
+      font-size: 11px;
+      color: #333;
+      margin: 4px 0;
+    }
+    #today-music-el li {
+      padding: 2px 0;
+      border-bottom: 1px dotted #ccc;
+      list-style: none;
+      display: flex; gap: 6px;
+    }
+    #today-music-el li .tm { color: #5a7a3a; font-size: 10px; min-width: 2.5rem; }
+    .brew-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 11px;
+      border: 1px solid #bbb;
+    }
+    .brew-table th {
+      background: #c8d4b8;
+      border: 1px solid #aaa;
+      padding: 2px 6px;
+      font-size: 10px;
+      color: #1a3a1a;
+      text-align: left;
+    }
+    .brew-table td {
+      border: 1px solid #bbb;
+      padding: 3px 6px;
+      background: #f0ece4;
+    }
+    .pairing-txt {
+      font-size: 10px; color: #555;
+      font-style: italic;
+      margin-top: 5px;
+      padding-top: 4px;
+      border-top: 1px dotted #bbb;
+    }
+
+    /* 구분선 */
+    .section-hr {
+      border: none;
+      border-top: 2px solid #2d4a6e;
+      border-bottom: 1px solid #8a9ab0;
+      margin: 2px 0 6px;
+    }
+    .dotted-hr {
+      border: none;
+      border-top: 1px dashed #999;
+      margin: 8px 0;
+    }
+
+    /* 구성 섹션 */
+    .programme-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .programme-table td {
+      border: 1px solid #bbb;
+      padding: 18px 12px;
+      text-align: center;
+      background: #e8e4dc;
+      width: 50%;
+    }
+    .programme-table td:first-child { border-right: 2px solid #999; }
+    .prog-num {
+      font-size: 9px; color: #888;
+      letter-spacing: 2px; margin-bottom: 4px;
+    }
+    .prog-lbl {
+      font-family: 'Noto Serif KR', '바탕', serif;
+      font-size: 28px; font-weight: 400;
+      color: #1a2e44;
+    }
+    .sunset-row {
+      background: #d4d0c8;
+      border: 1px solid #bbb;
+      border-top: none;
+      padding: 6px;
+      text-align: center;
+      font-size: 10px;
+      color: #555;
+      letter-spacing: 2px;
+    }
+    .sunset-row::before { content: "— "; }
+    .sunset-row::after { content: " —"; }
+
+    /* 소개 */
+    .concept-text {
+      font-family: 'Noto Serif KR', '바탕', serif;
+      font-size: 12px;
+      line-height: 2;
+      color: #2a2a2a;
+      margin-bottom: 8px;
+    }
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+    .info-table th {
+      background: #c8ccd4;
+      border: 1px solid #999;
+      padding: 4px 8px;
+      text-align: left;
+      color: #1a2e44;
+      font-weight: bold;
+      width: 38%;
+    }
+    .info-table td {
+      border: 1px solid #bbb;
+      padding: 4px 8px;
+      background: #f0ece4;
+    }
+    .info-table tr:nth-child(even) td { background: #e8e4dc; }
+    .info-table a { color: #1a3a6a; }
+    .info-table a:hover { color: #c84a00; }
+
+    /* 기록 */
+    .rec-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .rec-table td {
+      border: 1px solid #bbb;
+      padding: 10px;
+      vertical-align: top;
+      background: #f0ece4;
+      width: 33.3%;
+    }
+    .rec-table tr td:nth-child(even) { background: #e8e4dc; }
+    .rec-num { font-size: 9px; color: #888; letter-spacing: 2px; margin-bottom: 4px; }
+    .rec-date { font-size: 10px; color: #1a3a6a; font-weight: bold; margin-bottom: 1px; }
+    .rec-wx { font-size: 10px; color: #777; margin-bottom: 6px; }
+    .rec-tracks { list-style: none; padding: 0; margin: 0 0 6px; border-top: 1px solid #ccc; }
+    .rec-tracks li {
+      font-size: 10px; color: #444;
+      padding: 2px 0;
+      border-bottom: 1px dotted #ccc;
+    }
+    .rec-tracks li::before { content: "♪ "; color: #5a7a3a; }
+    .rec-brew { font-size: 10px; color: #555; line-height: 1.6; }
+    .rec-brew b { color: #2a2a2a; }
+
+    /* 클로징 */
+    #closing-box {
+      background: #1e2e1e;
+      border: 1px solid #333;
+      padding: 24px;
+      text-align: center;
+    }
+    #closing-box p {
+      font-family: 'Noto Serif KR', '바탕', serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: #c8b87a;
+      letter-spacing: 3px;
+      margin: 0;
+    }
+    #closing-box .sub-close {
+      font-size: 10px; color: #5a6a4a;
+      margin-top: 8px; letter-spacing: 1px;
+    }
+
+    /* 푸터 */
+    #footer {
+      background: #2d4a6e;
+      border: 1px solid #1a2e44;
+      border-top: 2px solid #1a2e44;
+      padding: 6px 12px;
+      text-align: center;
+      margin-top: 6px;
+    }
+    #footer p {
+      color: #7a9ab4;
+      font-size: 10px;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    /* 방문자 카운터 느낌 */
+    .counter-box {
+      background: #000;
+      border: 1px inset #555;
+      padding: 2px 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #00cc00;
+      letter-spacing: 2px;
+      display: inline-block;
+    }
+
+    /* 공지 스크롤 바 */
+    .notice-bar {
+      background: #fff8dc;
+      border: 1px solid #ccaa00;
+      padding: 3px 8px;
+      font-size: 10px;
+      color: #664400;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    /* 새창 아이콘 느낌 버튼 */
+    .old-btn {
+      display: inline-block;
+      background: #e0dcd4;
+      border: 2px outset #ccc;
+      padding: 2px 8px;
+      font-size: 10px;
+      color: #1a2e44;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .old-btn:hover { background: #d0ccc4; border-style: inset; }
+    .old-btn:active { border-style: inset; }
+
+    a { color: #1a3a6a; }
+  </style>
+</head>
+<body>
+
+<div id="wrap">
+
+  <!-- 헤더 -->
+  <div id="header">
+    <div id="header-inner">
+      <h1 id="site-title">공간사색 &nbsp;·&nbsp; 空間思索</h1>
+      <p id="site-subtitle">복합문화예술공간 · 파주 헤이리마을 빈티지 오디오 청음공간</p>
+    </div>
+    <div id="header-nav">
+      <a href="#hero">홈</a>
+      <a href="#playlist">구성</a>
+      <a href="#concept">소개</a>
+      <a href="#sns">기록</a>
+      &nbsp;&nbsp;
+      <span style="font-size:10px;color:#6a8aaa;">☎ 0507-1348-8623</span>
+      &nbsp;&nbsp;
+      <span style="font-size:10px;color:#6a8aaa;">📍 파주 헤이리마을길 59-45</span>
+    </div>
+  </div>
+
+  <!-- 공지 -->
+  <div class="notice-bar">
+    ★ 공간사색은 그날의 무드에 맞는 음악과 페어링 된 음료를 준비합니다. 예약제 운영. 화~일 영업. 월요일 정기휴무.
+  </div>
+
+  <!-- 메인 테이블 레이아웃 -->
+  <table id="main-table">
+    <tr>
+      <!-- 왼쪽 사이드바 -->
+      <td id="left-col">
+
+        <div class="side-box">
+          <div class="side-box-title">:: 메뉴</div>
+          <div class="side-box-body side-menu">
+            <a href="#hero">홈</a>
+            <a href="#playlist">구성</a>
+            <a href="#concept">소개</a>
+            <a href="#sns">기록</a>
+          </div>
+        </div>
+
+        <div class="side-box">
+          <div class="side-box-title">:: 운영안내</div>
+          <div class="side-box-body side-info">
+            <b>영업시간</b><br>
+            화–일 12:00~21:00<br>
+            (월요일 정기휴무)<br>
+            <hr class="dotted-hr">
+            <b>위치</b><br>
+            파주 헤이리마을<br>
+            <hr class="dotted-hr">
+            <a href="https://naver.me/xy751MJ9" target="_blank" class="old-btn">📍 지도보기</a>
+          </div>
+        </div>
+
+        <div class="side-box">
+          <div class="side-box-title">:: 연락처</div>
+          <div class="side-box-body side-info">
+            <b>Tel</b><br>
+            0507-1348-8623<br>
+            <hr class="dotted-hr">
+            <b>Instagram</b><br>
+            <a href="https://instagram.com/gonggan.sasaek" target="_blank">@gonggan.sasaek</a><br>
+            <hr class="dotted-hr">
+            <b>YouTube</b><br>
+            <a href="https://www.youtube.com/@gonggansasaek" target="_blank">@gonggansasaek</a>
+          </div>
+        </div>
+
+        <div class="side-box">
+          <div class="side-box-title">:: 방문자</div>
+          <div class="side-box-body" style="text-align:center;padding:8px;">
+            <div class="counter-box" id="counter">001247</div>
+            <p style="font-size:9px;color:#888;margin-top:3px;">Today: <span id="today-cnt">42</span></p>
+          </div>
+        </div>
+
+      </td>
+
+      <!-- 오른쪽 메인 콘텐츠 -->
+      <td id="right-col">
+
+        <!-- HERO -->
+        <a name="hero"></a>
+        <div id="hero-box">
+          <div id="hero-kanji">空間<br>思索</div>
+          <h1>소리 속에서 조용히 <em>사색하는</em> 시간</h1>
+          <hr class="hero-divider">
+          <p>그날의 무드에 맞는 음악과 페어링 된 음료</p>
+        </div>
+
+        <!-- 오늘의 사색 -->
+        <div id="today-card">
+          <div class="today-card-head">♪ Today's Curation — 오늘의 사색</div>
+          <div class="today-card-body">
+            <div class="today-meta-row">
+              <span id="today-date-el">—</span>
+              &nbsp;·&nbsp;
+              <span id="today-theme-el"></span>
+            </div>
+            <ul id="today-music-el">
+              <li><span class="tm">—</span><span>불러오는 중...</span></li>
+            </ul>
+            <table class="brew-table">
+              <tr>
+                <th>☕ 오늘의 커피</th>
+                <th>🍵 오늘의 차</th>
+              </tr>
+              <tr>
+                <td>
+                  <b id="brew-coffee-name">—</b><br>
+                  <span style="font-size:10px;color:#666;" id="brew-coffee-note"></span>
+                </td>
+                <td>
+                  <b id="brew-tea-name">—</b><br>
+                  <span style="font-size:10px;color:#666;" id="brew-tea-note"></span>
+                </td>
+              </tr>
+            </table>
+            <p class="pairing-txt" id="today-pairing-el"></p>
+          </div>
+        </div>
+
+        <hr class="section-hr" style="margin-top:6px;">
+
+        <!-- 구성 -->
+        <a name="playlist"></a>
+        <div class="main-box">
+          <div class="main-box-title">
+            <span class="ico">♫</span>
+            <span class="ttl">구성 · Programme</span>
+            <span class="sub">매일 다른 구성</span>
+          </div>
+          <div class="main-box-body">
+            <p style="font-size:10px;color:#666;margin-bottom:8px;">
+              플레이리스트는 그날의 무드에 맞게 고릅니다. 앨범 사이에는 짧게 의도된 무음 시간을 둡니다.
+            </p>
+            <table class="programme-table">
+              <tr>
+                <td>
+                  <p class="prog-num">PART</p>
+                  <p class="prog-lbl">1부</p>
+                </td>
+                <td>
+                  <p class="prog-num">PART</p>
+                  <p class="prog-lbl">2부</p>
+                </td>
+              </tr>
+            </table>
+            <div class="sunset-row">
+              ☀ 일몰
+            </div>
+          </div>
+        </div>
+
+        <!-- 소개 -->
+        <a name="concept"></a>
+        <div class="main-box">
+          <div class="main-box-title">
+            <span class="ico">空間思索</span>
+            <span class="ttl">소개 · About</span>
+          </div>
+          <div class="main-box-body">
+            <p class="concept-text">
+              공간사색(空間思索)은 그날의 무드에 맞는 음악과, 그 음악에 페어링된 음료를 즐기며 잠시 사색할 수 있는 공간입니다.
+            </p>
+            <p class="concept-text">
+              인공조명을 최소화하고 자연광만으로 운영합니다. 시간에 따라 달라지는 빛 속에서 음악을 듣고, 앞마당 중정에서는 계절마다 四色(사색)의 풍경을 만날 수 있습니다.
+            </p>
+            <p class="concept-text">
+              다양한 스피커와 앰프를 매칭하여 설치하고, 빈티지 스피커는 처음 발매됐을 당시 사람들이 들었을 그 소리를 상상할 수 있도록 완벽한 상태를 유지합니다. 아무리 좋은 스피커 시스템이라도 룸튜닝이 되어 있지 않으면 무용지물입니다. 공간사색(空間思索)은 REW로 직접 측정하고 조율하며(주 1회), 소스는 그날에 맞게 LP, CD, 디지털 음원, 릴 테잎, DAT 중에서 고릅니다.
+            </p>
+            <p class="concept-text">
+              음악과 아티스트를 깊이 들여다볼 수 있는 원데이클래스, 청음회, 콜라보레이션 등 다양한 복합문화예술 행사도 함께합니다.
+            </p>
+
+            <hr class="dotted-hr">
+
+            <table class="info-table">
+              <tr><th>주소</th><td><a href="https://naver.me/xy751MJ9" target="_blank">경기도 파주시 탄현면 헤이리마을길 59-45 1층</a></td></tr>
+              <tr><th>영업시간 및 휴무</th><td><a href="https://naver.me/xy751MJ9" target="_blank">영업일 · 시간 확인 (네이버지도)</a></td></tr>
+              <tr><th>이메일</th><td><span id="email-reveal"></span></td></tr>
+              <tr><th>전화</th><td><a href="tel:050713488623">0507-1348-8623</a></td></tr>
+              <tr><th>인스타그램</th><td><a href="https://instagram.com/gonggan.sasaek" target="_blank">@gonggan.sasaek</a></td></tr>
+              <tr><th>유튜브</th><td><a href="https://www.youtube.com/@gonggansasaek" target="_blank">youtube.com/@gonggansasaek</a></td></tr>
+              <tr><th>오디오</th><td>빈티지 하이엔드</td></tr>
+              <tr><th>룸 어쿠스틱</th><td>REW 기반 정밀 측정 설계</td></tr>
+              <tr><th>음원 소스</th><td>LP · CD · 디지털 음원 · 릴 테잎 · DAT</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- 기록 -->
+        <a name="sns"></a>
+        <div class="main-box">
+          <div class="main-box-title">
+            <span class="ico">📷</span>
+            <span class="ttl">기록 · Instagram</span>
+            <span class="sub">날짜, 날씨, 음악, 음료</span>
+          </div>
+          <div class="main-box-body">
+            <p style="font-size:10px;color:#666;margin-bottom:8px;">쌓이는 아카이브가 공간사색의 기록이 됩니다.</p>
+            <table class="rec-table">
+              <tr>
+                <td>
+                  <p class="rec-num">REC-001</p>
+                  <p class="rec-date">2025.03.14 금요일</p>
+                  <p class="rec-wx">☀ 맑음</p>
+                  <ul class="rec-tracks">
+                    <li>Keith Jarrett — Facing You</li>
+                    <li>Jan Garbarek — Officium</li>
+                    <li>Nils Frahm — Spaces</li>
+                    <li>Arvo Pärt — Tabula Rasa</li>
+                  </ul>
+                  <p class="rec-brew">☕ <b>케냐 AA</b><br>블랙커런트, 우수의 여운<br>🍵 <b>백호은침</b><br>침묵에 가까운 여운</p>
+                </td>
+                <td>
+                  <p class="rec-num">REC-002</p>
+                  <p class="rec-date">2025.03.08 토요일</p>
+                  <p class="rec-wx">⛅ 흐림 후 맑음</p>
+                  <ul class="rec-tracks">
+                    <li>Bill Evans — Explorations</li>
+                    <li>Miles Davis — Sketches of Spain</li>
+                    <li>Stan Getz — Focus</li>
+                    <li>Erik Satie — Gymnopédies</li>
+                  </ul>
+                  <p class="rec-brew">☕ <b>에티오피아 예가체프</b><br>플로럴, 봄볕 산미<br>🍵 <b>허브티</b><br>여백과 여운</p>
+                </td>
+                <td>
+                  <p class="rec-num">REC-003</p>
+                  <p class="rec-date">2025.03.01 토요일</p>
+                  <p class="rec-wx">❄ 눈</p>
+                  <ul class="rec-tracks">
+                    <li>Arvo Pärt — Spiegel im Spiegel</li>
+                    <li>Nils Frahm — All Melody</li>
+                    <li>Harold Budd — Plateaux of Mirror</li>
+                    <li>ECM Selected Works</li>
+                  </ul>
+                  <p class="rec-brew">☕ <b>콜롬비아 후일라</b><br>다크초콜릿, 캐러멜<br>🍵 <b>중국 백차</b><br>눈 내리는 여운</p>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- 클로징 -->
+        <div id="closing-box">
+          <p>소리 속에서, 오늘을 조용히 사색하세요.</p>
+          <p class="sub-close">空間思索 · Paju Heyri</p>
+        </div>
+
+      </td>
+    </tr>
+  </table>
+
+  <!-- 푸터 -->
+  <div id="footer">
+    <p>© 2025 공간사색 空間思索 &nbsp;|&nbsp; 경기도 파주시 탄현면 헤이리마을길 59-45 1층</p>
+  </div>
+
+</div>
+
+<script src="./main.js" data-cfasync="false"></script>
+<script data-cfasync="false">
+  // 방문자 카운터 (로컬)
+  var cnt = parseInt(localStorage.getItem('gonggan_visits') || '1247') + 1;
+  localStorage.setItem('gonggan_visits', cnt);
+  document.getElementById('counter').textContent = String(cnt).padStart(6,'0');
+  document.getElementById('today-cnt').textContent = Math.floor(Math.random()*60+20);
+</script>
+
+</body>
+</html>
