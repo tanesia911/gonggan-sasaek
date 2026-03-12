@@ -1,3 +1,36 @@
+
+// ── 다크모드 토글 ──
+(function() {
+  const btn = document.getElementById('theme-toggle');
+  const icon = btn ? btn.querySelector('.toggle-icon') : null;
+  const label = btn ? btn.querySelector('.toggle-label') : null;
+  const root = document.documentElement;
+
+  // 저장된 테마 복원
+  const saved = localStorage.getItem('gonggan_theme');
+  if (saved === 'dark') {
+    root.setAttribute('data-theme', 'dark');
+    if (icon) icon.textContent = '☽';
+    if (label) label.textContent = 'Dark';
+  }
+
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        root.removeAttribute('data-theme');
+        icon.textContent = '☀';
+        label.textContent = 'Light';
+        localStorage.setItem('gonggan_theme', 'light');
+      } else {
+        root.setAttribute('data-theme', 'dark');
+        icon.textContent = '☽';
+        label.textContent = 'Dark';
+        localStorage.setItem('gonggan_theme', 'dark');
+      }
+    });
+  }
+})();
 // ── 햄버거 메뉴 ──
 const burger = document.getElementById('burger');
 const mobileMenu = document.getElementById('mobile-menu');
