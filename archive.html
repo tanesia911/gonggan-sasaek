@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공간사색 — 아카이브</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500&family=Noto+Sans+KR:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" media="print" onload="this.media='all'">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f0e8; --bg-warm: #ede7d9; --ink: #1a1714;
+    --ink-mid: #3d3730; --ink-soft: #7a6e62; --ink-faint: #b0a496;
+    --amber: #c8862a; --rule: rgba(26,23,20,0.12);
+  }
+  body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans KR', sans-serif; font-weight: 300; }
+  body::before {
+    content:''; position:fixed; inset:0; z-index:999; pointer-events:none; opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:200px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:200;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(245,240,232,0.92); backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-logo { font-family: 'Noto Serif KR', serif; font-size:.95rem; letter-spacing:.08em; color:var(--ink); text-decoration:none; }
+  .nav-logo span { color:var(--amber); }
+  .nav-back { font-size:.72rem; letter-spacing:.1em; color:var(--ink-soft); text-decoration:none; }
+  .nav-back:hover { color:var(--amber); }
+
+  main { max-width: 900px; margin: 0 auto; padding: 6rem 2rem 4rem; }
+
+  /* 헤더 */
+  .arch-header { margin-bottom: 3rem; }
+  .arch-label { font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--amber); margin-bottom:.8rem; }
+  .arch-title { font-family:'Noto Serif KR', serif; font-size:2rem; font-weight:400; line-height:1.3; }
+  .arch-sub { font-size:.82rem; color:var(--ink-soft); margin-top:.6rem; }
+
+  /* 필터 */
+  .filters { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:2rem; align-items:center; }
+  .filter-label { font-size:.68rem; color:var(--ink-soft); margin-right:.3rem; }
+  .filter-btn {
+    padding:.25rem .7rem; border:1px solid var(--rule); border-radius:20px;
+    cursor:pointer; font-size:.7rem; background:var(--bg); color:var(--ink-soft);
+    transition:all .15s; font-family:inherit;
+  }
+  .filter-btn.active, .filter-btn:hover { background:var(--amber); color:white; border-color:var(--amber); }
+  .search-wrap { margin-left:auto; }
+  .search-wrap input {
+    padding:.3rem .8rem; border:1px solid var(--rule); border-radius:20px;
+    background:var(--bg); font-family:inherit; font-size:.72rem; color:var(--ink); outline:none; width:160px;
+  }
+  .search-wrap input:focus { border-color:var(--amber); }
+
+  /* 아카이브 그리드 */
+  .archive-count { font-size:.72rem; color:var(--ink-faint); margin-bottom:1rem; }
+  #archive-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:1.2rem; }
+
+  .arch-card {
+    background:white; border:1px solid var(--rule); border-radius:4px; padding:1.4rem;
+    cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
+  }
+  .arch-card::before {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+    background:var(--amber); transform:scaleY(0); transition:transform .2s; transform-origin:bottom;
+  }
+  .arch-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.07); transform:translateY(-2px); }
+  .arch-card:hover::before { transform:scaleY(1); }
+  .arch-card.expanded { grid-column:1/-1; }
+
+  .card-date { font-size:.68rem; color:var(--ink-soft); margin-bottom:.3rem; }
+  .card-theme { font-family:'Cormorant Garamond', serif; font-style:italic; font-size:.95rem; color:var(--ink-mid); margin-bottom:.8rem; line-height:1.4; }
+  .card-tracks { list-style:none; }
+  .card-tracks li { display:flex; gap:.6rem; font-size:.72rem; padding:.18rem 0; border-bottom:1px solid var(--rule); }
+  .card-tracks li:last-child { border:none; }
+  .ct-time { color:var(--amber); min-width:36px; font-size:.68rem; }
+  .ct-silence { color:var(--ink-faint); font-style:italic; font-size:.66rem; padding:.18rem 0; }
+  .card-bev { display:flex; gap:.8rem; margin-top:.8rem; padding-top:.8rem; border-top:1px solid var(--rule); font-size:.72rem; }
+  .bev-item { flex:1; }
+  .bev-lbl { font-size:.62rem; color:var(--ink-faint); }
+  .bev-name { font-weight:500; }
+  .bev-note { color:var(--ink-soft); font-size:.68rem; }
+  .card-expand-btn { margin-top:.8rem; font-size:.65rem; color:var(--amber); cursor:pointer; background:none; border:none; font-family:inherit; padding:0; }
+
+  /* 빈 상태 */
+  .empty-state { text-align:center; padding:4rem 2rem; color:var(--ink-soft); }
+  .empty-state p { font-family:'Cormorant Garamond', serif; font-style:italic; font-size:1.1rem; margin-bottom:.5rem; }
+  .empty-state small { font-size:.72rem; }
+
+  /* 추가 버튼 */
+  .add-section { background:var(--bg-warm); border:2px dashed var(--rule); border-radius:4px; padding:2rem; margin-top:2rem; text-align:center; }
+  .add-section p { font-size:.78rem; color:var(--ink-soft); margin-bottom:1rem; }
+  .btn-add { padding:.5rem 1.4rem; background:var(--amber); color:white; border:none; border-radius:3px; cursor:pointer; font-family:inherit; font-size:.78rem; }
+  textarea.json-input {
+    width:100%; min-height:120px; padding:.8rem; margin-top:1rem;
+    border:1px solid var(--rule); border-radius:3px; background:white;
+    font-family:'SF Mono','Consolas',monospace; font-size:.75rem; resize:vertical;
+    display:none;
+  }
+  .add-actions { display:flex; gap:.6rem; justify-content:center; margin-top:.8rem; display:none; }
+  .btn-save { padding:.45rem 1rem; background:var(--ink); color:white; border:none; border-radius:3px; cursor:pointer; font-family:inherit; font-size:.75rem; }
+  .btn-cancel { padding:.45rem 1rem; background:none; border:1px solid var(--rule); border-radius:3px; cursor:pointer; font-family:inherit; font-size:.75rem; }
+
+  /* 연도/월 구분 */
+  .month-divider { font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; color:var(--ink-faint); margin:1.5rem 0 .6rem; padding-bottom:.4rem; border-bottom:1px solid var(--rule); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">공간사색 <span>·</span> 空間思索</a>
+  <a href="index.html" class="nav-back">← 메인으로</a>
+</nav>
+
+<main>
+  <div class="arch-header">
+    <p class="arch-label">Archive · 기록</p>
+    <h1 class="arch-title">매일의 사색</h1>
+    <p class="arch-sub">날짜, 날씨, 음악, 음료 — 쌓이는 아카이브가 공간사색의 기록이 됩니다.</p>
+  </div>
+
+  <div class="filters">
+    <span class="filter-label">장르</span>
+    <button class="filter-btn active" data-filter="all">전체</button>
+    <button class="filter-btn" data-filter="재즈">재즈</button>
+    <button class="filter-btn" data-filter="클래식">클래식</button>
+    <button class="filter-btn" data-filter="앰비언트">앰비언트</button>
+    <button class="filter-btn" data-filter="보사노바">보사노바</button>
+    <div class="search-wrap">
+      <input type="text" id="search-input" placeholder="아티스트, 앨범 검색...">
+    </div>
+  </div>
+
+  <p class="archive-count" id="archive-count"></p>
+  <div id="archive-grid"></div>
+
+  <div class="add-section" id="add-section">
+    <p>오늘의 큐레이션을 아카이브에 추가하세요.<br>today.json 파일의 내용을 붙여넣기 하면 자동으로 저장됩니다.</p>
+    <button class="btn-add" onclick="toggleAddForm()">+ 기록 추가</button>
+    <textarea class="json-input" id="json-input" placeholder='today.json 내용을 여기에 붙여넣기...'></textarea>
+    <div class="add-actions" id="add-actions">
+      <button class="btn-save" onclick="saveEntry()">저장</button>
+      <button class="btn-cancel" onclick="toggleAddForm()">취소</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const STORAGE_KEY = 'gonggan_archive';
+
+// 샘플 데이터
+const SAMPLE_DATA = [
+  {
+    date: "2025. 03. 12. 수요일", weather: "맑음", theme: "이른 봄, 빛이 길어지는 오후",
+    playlist: [
+      {time:"12:00", artist:"Bill Evans Trio", album:"Waltz for Debby (1961)"},
+      {time:"13:00", artist:"Keith Jarrett", album:"The Köln Concert, Part I (1975)"},
+      {silence:true, duration:5},
+      {time:"14:05", artist:"Miles Davis", album:"Kind of Blue (1959)"},
+      {time:"15:00", artist:"John Coltrane", album:"A Love Supreme (1965)"},
+      {time:"15:40", artist:"Art Pepper", album:"Meets The Rhythm Section (1957)"},
+      {silence:true, duration:5},
+      {time:"16:35", artist:"Chet Baker", album:"Chet Baker Sings (1954)"},
+      {time:"17:10", artist:"Stan Getz & João Gilberto", album:"Getz/Gilberto (1964)"},
+      {time:"17:50", artist:"Erik Satie", album:"Gymnopédies & Gnossiennes"},
+      {time:"18:30", artist:"Arvo Pärt", album:"Spiegel im Spiegel 外"}
+    ],
+    coffee:{origin:"콜롬비아 후일라", note:"다크초콜릿 · 캐러멜"},
+    tea:{name:"백호은침", note:"여백 · 여운"},
+    pairing_reason:"Miles Davis와 Coltrane의 묵직한 밀도감이 후일라의 긴 여운과 닮아 있습니다.",
+    tags:["재즈","클래식"]
+  },
+  {
+    date: "2025. 03. 08. 토요일", weather: "흐림 후 맑음", theme: "안개 걷히는 오전",
+    playlist: [
+      {time:"12:00", artist:"Bill Evans", album:"Explorations (1961)"},
+      {time:"13:00", artist:"Miles Davis", album:"Sketches of Spain (1960)"},
+      {silence:true, duration:5},
+      {time:"14:05", artist:"Jan Garbarek", album:"Officium (1994)"},
+      {time:"15:10", artist:"Nils Frahm", album:"Solo (2015)"},
+      {time:"16:00", artist:"Ólafur Arnalds", album:"Living Room Songs (2011)"},
+      {silence:true, duration:5},
+      {time:"17:10", artist:"Max Richter", album:"Sleep (Selected)"},
+      {time:"18:20", artist:"Arvo Pärt", album:"Tabula Rasa (1984)"}
+    ],
+    coffee:{origin:"케냐 AA", note:"블랙커런트 · 우수의 여운"},
+    tea:{name:"백호은침", note:"침묵에 가까운 여운"},
+    pairing_reason:"Garbarek의 색소폰이 사라지는 잔향이 케냐 AA의 긴 finish와 공명합니다.",
+    tags:["재즈","앰비언트","클래식"]
+  },
+  {
+    date: "2025. 03. 01. 토요일", weather: "눈", theme: "고요한 설경",
+    playlist: [
+      {time:"12:00", artist:"Arvo Pärt", album:"Spiegel im Spiegel"},
+      {time:"13:00", artist:"Erik Satie", album:"Gymnopédies & Gnossiennes"},
+      {silence:true, duration:8},
+      {time:"14:15", artist:"Keith Jarrett", album:"Facing You (1972)"},
+      {time:"15:30", artist:"Bill Evans", album:"Waltz for Debby (1961)"},
+      {silence:true, duration:5},
+      {time:"17:00", artist:"Nils Frahm", album:"All Melody (2018)"},
+      {time:"18:10", artist:"Johann Johannsson", album:"The Miners' Hymns"}
+    ],
+    coffee:{origin:"에티오피아 예가체프", note:"플로럴 · 레몬그라스"},
+    tea:{name:"동방미인", note:"복숭아 · 꿀"},
+    pairing_reason:"설경의 고요함과 예가체프의 맑은 플로럴이 공간의 흰빛을 함께 만듭니다.",
+    tags:["클래식","앰비언트"]
+  }
+];
+
+let allEntries = [];
+let currentFilter = 'all';
+let searchQuery = '';
+
+function loadEntries() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      allEntries = JSON.parse(saved);
+    } else {
+      allEntries = [...SAMPLE_DATA];
+      saveEntries();
+    }
+  } catch(e) {
+    allEntries = [...SAMPLE_DATA];
+  }
+}
+
+function saveEntries() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(allEntries)); } catch(e) {}
+}
+
+function getFilteredEntries() {
+  let entries = allEntries;
+  if (currentFilter !== 'all') {
+    entries = entries.filter(e => e.tags && e.tags.includes(currentFilter));
+  }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    entries = entries.filter(e => {
+      const text = [e.date, e.theme, e.weather,
+        e.coffee?.origin, e.tea?.name,
+        ...(e.playlist||[]).map(t => (t.artist||'') + ' ' + (t.album||''))
+      ].join(' ').toLowerCase();
+      return text.includes(q);
+    });
+  }
+  return entries;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('archive-grid');
+  const entries = getFilteredEntries();
+  document.getElementById('archive-count').textContent = `총 ${allEntries.length}일의 기록 · 표시 ${entries.length}건`;
+
+  if (entries.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;"><p>기록이 없습니다</p><small>아래에서 today.json을 붙여넣어 첫 번째 기록을 추가해보세요.</small></div>`;
+    return;
+  }
+
+  // 월별 그룹핑
+  const byMonth = {};
+  entries.forEach(e => {
+    const month = e.date ? e.date.substring(0, 8) : '날짜 미상';
+    if (!byMonth[month]) byMonth[month] = [];
+    byMonth[month].push(e);
+  });
+
+  grid.innerHTML = '';
+  Object.keys(byMonth).sort().reverse().forEach(month => {
+    const divider = document.createElement('div');
+    divider.className = 'month-divider';
+    divider.style.gridColumn = '1/-1';
+    divider.textContent = month;
+    grid.appendChild(divider);
+
+    byMonth[month].forEach((entry, idx) => {
+      const card = createCard(entry, allEntries.indexOf(entry));
+      grid.appendChild(card);
+    });
+  });
+}
+
+function createCard(entry, idx) {
+  const card = document.createElement('div');
+  card.className = 'arch-card';
+
+  const tracks = entry.playlist || [];
+  const showTracks = tracks.slice(0, 4);
+  const more = tracks.length - 4;
+
+  card.innerHTML = `
+    <div class="card-date">${entry.date}${entry.weather ? ' · ' + entry.weather : ''}</div>
+    <div class="card-theme">${entry.theme || ''}</div>
+    <ul class="card-tracks">
+      ${showTracks.map(t => t.silence
+        ? `<li><span class="ct-silence">— 무음 ${t.duration}분 —</span></li>`
+        : `<li><span class="ct-time">${t.time}</span><span>${t.artist} &nbsp; ${t.album}</span></li>`
+      ).join('')}
+      ${more > 0 ? `<li style="color:var(--ink-faint);font-size:.65rem;">외 ${more}곡</li>` : ''}
+    </ul>
+    <div class="card-bev">
+      <div class="bev-item">
+        <div class="bev-lbl">☕ 커피</div>
+        <div class="bev-name">${entry.coffee?.origin || '—'}</div>
+        <div class="bev-note">${entry.coffee?.note || ''}</div>
+      </div>
+      <div class="bev-item">
+        <div class="bev-lbl">🍵 차</div>
+        <div class="bev-name">${entry.tea?.name || '—'}</div>
+        <div class="bev-note">${entry.tea?.note || ''}</div>
+      </div>
+    </div>
+    ${entry.pairing_reason ? `<div style="font-size:.68rem;color:var(--ink-soft);margin-top:.7rem;font-style:italic;line-height:1.5;">${entry.pairing_reason}</div>` : ''}
+  `;
+
+  return card;
+}
+
+// 필터
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGrid();
+  });
+});
+
+// 검색
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  renderGrid();
+});
+
+// 추가 폼
+function toggleAddForm() {
+  const ta = document.getElementById('json-input');
+  const actions = document.getElementById('add-actions');
+  const showing = ta.style.display === 'block';
+  ta.style.display = showing ? 'none' : 'block';
+  actions.style.display = showing ? 'none' : 'flex';
+  if (!showing) ta.focus();
+}
+
+function saveEntry() {
+  const raw = document.getElementById('json-input').value.trim();
+  if (!raw) return;
+  try {
+    const entry = JSON.parse(raw);
+    // 태그 자동 추출
+    entry.tags = entry.tags || inferTags(entry);
+    allEntries.unshift(entry);
+    saveEntries();
+    renderGrid();
+    document.getElementById('json-input').value = '';
+    toggleAddForm();
+    alert('기록이 저장되었습니다.');
+  } catch(e) {
+    alert('JSON 형식이 올바르지 않습니다. today.json 내용을 그대로 붙여넣어 주세요.');
+  }
+}
+
+function inferTags(entry) {
+  const tags = [];
+  const text = (entry.playlist||[]).map(t=>(t.artist||'')+(t.album||'')).join(' ').toLowerCase();
+  if (/evans|jarrett|coltrane|davis|parker|monk|mingus|chet|getz|pepper/.test(text)) tags.push('재즈');
+  if (/bach|beethoven|satie|pärt|chopin|debussy|brahms|schubert/.test(text)) tags.push('클래식');
+  if (/gilberto|jobim|getz|bossa|stan/.test(text)) tags.push('보사노바');
+  if (/frahm|arnalds|richter|eno|ambient|johannsson/.test(text)) tags.push('앰비언트');
+  return tags;
+}
+
+// 초기화
+loadEntries();
+renderGrid();
+</script>
+</body>
+</html>
