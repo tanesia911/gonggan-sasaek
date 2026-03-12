@@ -939,9 +939,30 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
 // ── 스크롤 reveal ──
 const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.07 });
-document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
+
+function initReveal() {
+  document.querySelectorAll('.reveal').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('visible');
+    } else {
+      revealObs.observe(el);
+    }
+  });
+}
+
+if (document.readyState === 'complete') {
+  setTimeout(initReveal, 50);
+} else {
+  window.addEventListener('load', () => setTimeout(initReveal, 50));
+}
 
 // ── today.json 로드 ──
 async function loadToday() {
@@ -982,4 +1003,4 @@ async function loadToday() {
     }
 
   } catch {
-    document.getElementById('today-date-el').textContent = '오늘의 큐�
+    document.getElementById('today-date-el').textContent = '오늘의 큐�
