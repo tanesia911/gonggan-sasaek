@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공간사색 — 오늘의 큐레이션 편집기</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f0e8; --bg-warm: #ede7d9; --ink: #1a1714;
+    --ink-mid: #3d3730; --ink-soft: #7a6e62; --amber: #c8862a;
+    --rule: rgba(26,23,20,0.12); --green: #4a7c59;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  header { background: var(--bg-warm); border-bottom: 1px solid var(--rule); padding: 1.2rem 2rem; display: flex; align-items: center; gap: 1rem; }
+  header h1 { font-size: 1rem; font-weight: 500; letter-spacing: .05em; }
+  header span { font-size: .75rem; color: var(--ink-soft); }
+  .container { max-width: 860px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  @media (max-width: 700px) { .container { grid-template-columns: 1fr; } }
+  .card { background: white; border: 1px solid var(--rule); border-radius: 4px; padding: 1.5rem; }
+  .card h2 { font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem; padding-bottom: .5rem; border-bottom: 1px solid var(--rule); }
+  label { display: block; font-size: .72rem; color: var(--ink-soft); margin-bottom: .25rem; margin-top: .8rem; }
+  label:first-of-type { margin-top: 0; }
+  input, textarea, select {
+    width: 100%; padding: .5rem .7rem;
+    border: 1px solid var(--rule); border-radius: 3px;
+    background: var(--bg); color: var(--ink);
+    font-family: inherit; font-size: .85rem;
+    outline: none; transition: border .2s;
+  }
+  input:focus, textarea:focus { border-color: var(--amber); }
+  textarea { resize: vertical; min-height: 60px; }
+
+  /* 플레이리스트 */
+  #playlist-container { display: flex; flex-direction: column; gap: .6rem; }
+  .track-row { display: grid; grid-template-columns: 48px 1fr 1.4fr; gap: .4rem; align-items: center; }
+  .track-row input { font-size: .8rem; }
+  .track-row .del-btn { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 1rem; padding: 0 .3rem; }
+  .track-row .del-btn:hover { color: #c44; }
+  .silence-row { display: flex; align-items: center; gap: .6rem; font-size: .75rem; color: var(--ink-soft); padding: .3rem 0; border-top: 1px dashed var(--rule); border-bottom: 1px dashed var(--rule); }
+  .silence-row input[type=number] { width: 48px; }
+  .add-btn { margin-top: .6rem; background: none; border: 1px dashed var(--rule); color: var(--ink-soft); width: 100%; padding: .45rem; border-radius: 3px; cursor: pointer; font-size: .75rem; transition: all .2s; }
+  .add-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .add-silence-btn { margin-top: .3rem; }
+
+  /* 출력 영역 */
+  .output-card { grid-column: 1 / -1; }
+  #json-output {
+    background: #1a1714; color: #d4c9b8;
+    font-family: 'SF Mono', 'Consolas', monospace;
+    font-size: .78rem; line-height: 1.7;
+    padding: 1.2rem; border-radius: 4px;
+    white-space: pre; overflow-x: auto;
+    min-height: 120px;
+  }
+  .btn-row { display: flex; gap: .8rem; margin-top: 1rem; flex-wrap: wrap; }
+  .btn {
+    padding: .55rem 1.2rem; border: none; border-radius: 3px;
+    cursor: pointer; font-family: inherit; font-size: .8rem;
+    font-weight: 500; letter-spacing: .04em; transition: all .18s;
+  }
+  .btn-primary { background: var(--amber); color: white; }
+  .btn-primary:hover { background: #b5741f; }
+  .btn-copy { background: var(--bg-warm); color: var(--ink); border: 1px solid var(--rule); }
+  .btn-copy:hover { border-color: var(--amber); }
+  .btn-dl { background: var(--green); color: white; }
+  .btn-dl:hover { background: #3a6448; }
+  .copy-toast { display: none; font-size: .72rem; color: var(--green); align-items: center; gap: .3rem; }
+  .copy-toast.show { display: flex; }
+
+  /* 미리보기 */
+  .preview-mini { background: var(--bg-warm); border-radius: 4px; padding: 1rem; font-size: .8rem; margin-top: 1rem; }
+  .preview-mini .pm-date { font-size: .72rem; color: var(--ink-soft); margin-bottom: .3rem; }
+  .preview-mini .pm-tracks { display: flex; flex-direction: column; gap: .2rem; }
+  .pm-track { display: flex; gap: .8rem; }
+  .pm-time { color: var(--amber); font-size: .72rem; min-width: 38px; }
+  .pm-silence { color: var(--ink-soft); font-style: italic; font-size: .7rem; padding: .1rem 0; }
+  .pm-bev { display: flex; gap: 1rem; margin-top: .6rem; padding-top: .6rem; border-top: 1px solid var(--rule); }
+  .pm-bev-item { flex: 1; }
+  .pm-bev-label { font-size: .65rem; color: var(--ink-soft); }
+  .pm-bev-name { font-weight: 500; }
+  .pm-bev-note { font-size: .72rem; color: var(--ink-soft); }
+
+  /* 날씨 선택 */
+  .weather-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .4rem; }
+  .chip { padding: .25rem .65rem; border: 1px solid var(--rule); border-radius: 20px; cursor: pointer; font-size: .72rem; transition: all .15s; background: var(--bg); }
+  .chip.active { background: var(--amber); color: white; border-color: var(--amber); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>공간사색 — 오늘의 큐레이션 편집기</h1>
+  <span>today.json 생성 도구</span>
+</header>
+
+<div class="container">
+
+  <!-- 기본 정보 -->
+  <div class="card">
+    <h2>기본 정보</h2>
+    <label>날짜</label>
+    <input type="text" id="f-date" placeholder="2025. 03. 12. 수요일">
+    <label>날씨</label>
+    <input type="text" id="f-weather" placeholder="맑음">
+    <div class="weather-chips" id="weather-chips">
+      <span class="chip" data-v="맑음">☀ 맑음</span>
+      <span class="chip" data-v="흐림">☁ 흐림</span>
+      <span class="chip" data-v="비">🌧 비</span>
+      <span class="chip" data-v="눈">❄ 눈</span>
+      <span class="chip" data-v="흐리고 비">🌦 흐리고 비</span>
+      <span class="chip" data-v="맑고 쌀쌀">🌬 맑고 쌀쌀</span>
+      <span class="chip" data-v="안개">🌫 안개</span>
+    </div>
+    <label>오늘의 테마 (한 줄)</label>
+    <input type="text" id="f-theme" placeholder="이른 봄, 빛이 길어지는 오후">
+  </div>
+
+  <!-- 음료 -->
+  <div class="card">
+    <h2>오늘의 음료</h2>
+    <label>☕ 커피 원두</label>
+    <input type="text" id="f-coffee-origin" placeholder="콜롬비아 후일라">
+    <label>커피 테이스팅 노트</label>
+    <input type="text" id="f-coffee-note" placeholder="다크초콜릿 · 캐러멜">
+    <label>🍵 차 이름</label>
+    <input type="text" id="f-tea-name" placeholder="백호은침">
+    <label>차 테이스팅 노트</label>
+    <input type="text" id="f-tea-note" placeholder="여백 · 여운">
+    <label>페어링 이유</label>
+    <textarea id="f-pairing" placeholder="Miles Davis와 Coltrane의 묵직한 밀도감이 후일라의 긴 여운과 닮아 있습니다."></textarea>
+  </div>
+
+  <!-- 플레이리스트 -->
+  <div class="card" style="grid-column: 1 / -1;">
+    <h2>플레이리스트</h2>
+    <div style="display:grid;grid-template-columns:48px 1fr 1.4fr 28px;gap:.4rem;font-size:.65rem;color:var(--ink-soft);margin-bottom:.4rem;padding-bottom:.3rem;border-bottom:1px solid var(--rule);">
+      <span>시간</span><span>아티스트</span><span>앨범</span><span></span>
+    </div>
+    <div id="playlist-container"></div>
+    <div style="display:flex;gap:.5rem;margin-top:.6rem;">
+      <button class="add-btn" onclick="addTrack()">+ 트랙 추가</button>
+      <button class="add-btn add-silence-btn" onclick="addSilence()">··· 무음 구간 추가</button>
+    </div>
+  </div>
+
+  <!-- 출력 -->
+  <div class="card output-card">
+    <h2>생성된 today.json</h2>
+    <div id="json-output">← 위 내용을 입력하면 여기에 JSON이 생성됩니다.</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="generate()">JSON 생성</button>
+      <button class="btn btn-copy" onclick="copyJSON()">클립보드 복사</button>
+      <button class="btn btn-dl" onclick="downloadJSON()">today.json 다운로드</button>
+      <span class="copy-toast" id="copy-toast">✓ 복사됨</span>
+    </div>
+
+    <!-- 미리보기 -->
+    <div class="preview-mini" id="preview-mini" style="display:none;">
+      <div class="pm-date" id="pm-date"></div>
+      <div style="font-style:italic;font-size:.72rem;color:var(--ink-soft);margin-bottom:.5rem;" id="pm-theme"></div>
+      <div class="pm-tracks" id="pm-tracks"></div>
+      <div class="pm-bev" id="pm-bev"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// 날짜 자동 입력
+(function() {
+  const now = new Date();
+  const days = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+  const y = now.getFullYear(), m = now.getMonth()+1, d = now.getDate();
+  const day = days[now.getDay()];
+  document.getElementById('f-date').value = `${y}. ${String(m).padStart(2,'0')}. ${String(d).padStart(2,'0')}. ${day}`;
+})();
+
+// 날씨 칩
+document.getElementById('weather-chips').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  document.getElementById('f-weather').value = chip.dataset.v;
+});
+
+// 트랙/무음 관리
+let trackId = 0;
+function addTrack(time='', artist='', album='') {
+  const id = 'track-' + (trackId++);
+  const row = document.createElement('div');
+  row.className = 'track-row'; row.id = id;
+  row.innerHTML = `
+    <input type="text" placeholder="12:00" value="${time}" oninput="autoPreview()" style="text-align:center;">
+    <input type="text" placeholder="아티스트명" value="${artist}" oninput="autoPreview()">
+    <input type="text" placeholder="앨범명 (연도)" value="${album}" oninput="autoPreview()">
+    <button class="del-btn" onclick="document.getElementById('${id}').remove();autoPreview();">✕</button>
+  `;
+  document.getElementById('playlist-container').appendChild(row);
+}
+
+function addSilence(min=5) {
+  const id = 'silence-' + (trackId++);
+  const row = document.createElement('div');
+  row.className = 'silence-row'; row.id = id;
+  row.innerHTML = `
+    <span>무음 ·</span>
+    <input type="number" value="${min}" min="1" max="30" oninput="autoPreview()" style="width:48px;text-align:center;">
+    <span>분</span>
+    <button class="del-btn" onclick="document.getElementById('${id}').remove();autoPreview();" style="margin-left:auto;">✕</button>
+  `;
+  document.getElementById('playlist-container').appendChild(row);
+}
+
+// 기본 트랙 예시 추가
+addTrack('12:00', 'Bill Evans Trio', 'Waltz for Debby (1961)');
+addTrack('13:00', 'Keith Jarrett', 'The Köln Concert, Part I (1975)');
+addSilence(5);
+addTrack('14:05', 'Miles Davis', 'Kind of Blue (1959)');
+addTrack('15:00', 'John Coltrane', 'A Love Supreme (1965)');
+addSilence(5);
+addTrack('16:35', 'Chet Baker', 'Chet Baker Sings (1954)');
+addTrack('17:10', 'Stan Getz & João Gilberto', 'Getz/Gilberto (1964)');
+addTrack('17:50', 'Erik Satie', 'Gymnopédies & Gnossiennes');
+addTrack('18:30', 'Arvo Pärt', 'Spiegel im Spiegel 外');
+
+function buildData() {
+  const playlist = [];
+  document.getElementById('playlist-container').querySelectorAll('.track-row, .silence-row').forEach(row => {
+    if (row.classList.contains('track-row')) {
+      const inputs = row.querySelectorAll('input[type=text]');
+      const time = inputs[0].value.trim();
+      const artist = inputs[1].value.trim();
+      const album = inputs[2].value.trim();
+      if (time || artist || album) playlist.push({ time, artist, album });
+    } else {
+      const min = parseInt(row.querySelector('input[type=number]').value) || 5;
+      playlist.push({ silence: true, duration: min });
+    }
+  });
+  return {
+    date: document.getElementById('f-date').value.trim(),
+    weather: document.getElementById('f-weather').value.trim(),
+    theme: document.getElementById('f-theme').value.trim(),
+    playlist,
+    coffee: {
+      origin: document.getElementById('f-coffee-origin').value.trim(),
+      note: document.getElementById('f-coffee-note').value.trim()
+    },
+    tea: {
+      name: document.getElementById('f-tea-name').value.trim(),
+      note: document.getElementById('f-tea-note').value.trim()
+    },
+    pairing_reason: document.getElementById('f-pairing').value.trim()
+  };
+}
+
+let lastJSON = '';
+function generate() {
+  const d = buildData();
+  lastJSON = JSON.stringify(d, null, 2);
+  document.getElementById('json-output').textContent = lastJSON;
+  renderPreview(d);
+}
+
+function autoPreview() {
+  const d = buildData();
+  lastJSON = JSON.stringify(d, null, 2);
+  renderPreview(d);
+}
+
+function renderPreview(d) {
+  const preview = document.getElementById('preview-mini');
+  preview.style.display = 'block';
+  document.getElementById('pm-date').textContent = d.date + (d.weather ? ' · ' + d.weather : '');
+  document.getElementById('pm-theme').textContent = d.theme;
+  const tracks = document.getElementById('pm-tracks');
+  tracks.innerHTML = d.playlist.map(t => {
+    if (t.silence) return `<div class="pm-silence">— 무음 ${t.duration}분 —</div>`;
+    return `<div class="pm-track"><span class="pm-time">${t.time}</span><span>${t.artist} &nbsp; <strong>${t.album}</strong></span></div>`;
+  }).join('');
+  document.getElementById('pm-bev').innerHTML = `
+    <div class="pm-bev-item">
+      <div class="pm-bev-label">☕ 커피</div>
+      <div class="pm-bev-name">${d.coffee.origin || '—'}</div>
+      <div class="pm-bev-note">${d.coffee.note}</div>
+    </div>
+    <div class="pm-bev-item">
+      <div class="pm-bev-label">🍵 차</div>
+      <div class="pm-bev-name">${d.tea.name || '—'}</div>
+      <div class="pm-bev-note">${d.tea.note}</div>
+    </div>`;
+}
+
+function copyJSON() {
+  if (!lastJSON) generate();
+  navigator.clipboard.writeText(lastJSON).then(() => {
+    const t = document.getElementById('copy-toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  });
+}
+
+function downloadJSON() {
+  if (!lastJSON) generate();
+  const blob = new Blob([lastJSON], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'today.json';
+  a.click();
+}
+
+// 페이지 로드 시 자동 생성
+window.addEventListener('load', () => autoPreview());
+
+// 모든 입력에 autoPreview 바인딩
+['f-date','f-weather','f-theme','f-coffee-origin','f-coffee-note','f-tea-name','f-tea-note','f-pairing']
+  .forEach(id => document.getElementById(id).addEventListener('input', autoPreview));
+</script>
+</body>
+</html>
